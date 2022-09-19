@@ -10,7 +10,7 @@ DOCKER_IMAGE_NAME = "lv-shop-api"
 JAR_NAME = "com-lv-api-spring-boot.jar"
 
 
-PORT_DEV=6003
+PORT_DEV=6200
 TARTGET_FOLDER_DEPLOY="/opt/deploy/lvshop"
 
 
