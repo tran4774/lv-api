@@ -5,14 +5,15 @@
 #
 version: '2'
 networks:
-  basic:
-    #external:
-      #name: postgres-network
+  default_network:
+    external: true
+    name: server_network
 services:
   lv_shop_api:
     container_name: {CONTAINER_NAME}
     image: {CONTAINER_IMAGE}:1.0
-    mem_limit: 1000m
+    mem_limit: 1500m
+    #restart: always
     environment:
       - SPRING_PROFILES_ACTIVE={PROFILES_ACTIVE}
     volumes:
