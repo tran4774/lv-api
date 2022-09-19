@@ -23,7 +23,7 @@ public class SwaggerConfig {
                 .consumes(consumesAndProduces)
                 .produces(consumesAndProduces)
                 .useDefaultResponseMessages(false)
-                .select().apis(RequestHandlerSelectors.basePackage("com.landingis.api.controller"))
+                .select().apis(RequestHandlerSelectors.basePackage("com.lv.api.controller"))
                 .paths(PathSelectors.any())
                 .build();
     }
