@@ -20,4 +20,4 @@ services:
     networks:
         - basic
     ports:
-      - "127.0.0.1:{PORT}:8383"
+      - "192.168.0.10:{PORT}:8383"

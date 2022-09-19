@@ -3,15 +3,15 @@ _BRANCH_NAME = env.BRANCH_NAME
 
 TIMEZONE = "GMT+7"
 APP_BOOT_TIME_SECOND = 30
-SLACK_CHANNEL_NAME = "GMQ6JQ1FT"
+SLACK_CHANNEL_NAME = "C043CHCAB7B"
 
-APP_NAME = "nails-api-v2"
-DOCKER_IMAGE_NAME = "nails-api-v2"
-JAR_NAME = "com-nails-api-spring-boot.jar"
+APP_NAME = "lv-shop-api"
+DOCKER_IMAGE_NAME = "lv-shop-api"
+JAR_NAME = "com-lv-api-spring-boot.jar"
 
 
 PORT_DEV=6003
-TARTGET_FOLDER_DEPLOY="/opt/deploy/nails"
+TARTGET_FOLDER_DEPLOY="/opt/deploy/lvshop"
 
 
 BUILD_FOLER="dev-ops"
@@ -64,7 +64,7 @@ node{
                     sudo docker rmi -f ${APP_NAME}-dev:1.0
                     sudo rm -rf ${TARTGET_FOLDER_DEPLOY}/${APP_NAME}-dev/*
 
-                    sudo cp ./${BUILD_FOLER}/com-nails-api/target/${JAR_NAME} ${TARTGET_FOLDER_DEPLOY}/${APP_NAME}-dev/
+                    sudo cp ./${BUILD_FOLER}/com-lv-api/target/${JAR_NAME} ${TARTGET_FOLDER_DEPLOY}/${APP_NAME}-dev/
                     sudo cp ./${BUILD_FOLER}/docker-compose.yml ${TARTGET_FOLDER_DEPLOY}/${APP_NAME}-dev/
                     sudo cp ./${BUILD_FOLER}/Dockerfile ${TARTGET_FOLDER_DEPLOY}/${APP_NAME}-dev/
                     sudo cp ./dev-ops/config/config.properties ${TARTGET_FOLDER_DEPLOY}/${APP_NAME}-dev/
