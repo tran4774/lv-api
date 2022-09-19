@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.landingis.root</groupId>
-        <artifactId>landingis-mvn</artifactId>
+        <artifactId>lv-api</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <groupId>com.landingis.api</groupId>
-    <artifactId>com-landingis-api</artifactId>
+    <artifactId>com-lv-api</artifactId>
     <packaging>jar</packaging>
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
