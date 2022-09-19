@@ -41,7 +41,7 @@ node{
                     sh """
                         cp -r source/* dev-ops/
                         cd dev-ops
-                        cp config/* com-nails-api/src/main/resources/
+                        cp config/* com-lv-api/src/main/resources/
                         mvn clean package
                     """
                 }
