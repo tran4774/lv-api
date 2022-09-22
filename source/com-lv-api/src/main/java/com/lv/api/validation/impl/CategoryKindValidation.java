@@ -5,7 +5,6 @@ import com.lv.api.validation.CategoryKind;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.util.Objects;
 
 public class CategoryKindValidation implements ConstraintValidator<CategoryKind, Integer> {
     private boolean allowNull;
@@ -18,9 +17,16 @@ public class CategoryKindValidation implements ConstraintValidator<CategoryKind,
         if(categoryKind == null && allowNull) {
             return true;
         }
-        if(!Objects.equals(categoryKind, LandingISConstant.CATEGORY_KIND)) {
-            return false;
+        if (categoryKind != null) {
+            switch (categoryKind) {
+                case LandingISConstant.CATEGORY_KIND_NEWS:
+                case LandingISConstant.CATEGORY_KIND_JOB:
+                case LandingISConstant.CATEGORY_KIND_DEPARTMENT:
+                    return true;
+                default:
+                    return false;
+            }
         }
-        return true;
+        return false;
     }
 }

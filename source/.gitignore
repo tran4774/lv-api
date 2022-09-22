@@ -1,3 +1,5 @@
 .idea/
 /com-lv-api/target/
 *.iml
+*.env
+docker-compose.yml
