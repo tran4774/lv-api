@@ -40,4 +40,19 @@ public class LocationCriteria {
             return cb.and(predicates.toArray(new Predicate[predicates.size()]));
         };
     }
+
+    public Specification<Location> getSpecificationAutoComplete() {
+        return (root, criteriaQuery, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            if (getName() != null) {
+                predicates.add(cb.like(cb.lower(root.get("name")), getName().toLowerCase() + "%"));
+            }
+            if (getParentId() != null) {
+                predicates.add(cb.equal(root.get("parent"), getParentId()));
+            } else {
+                predicates.add(cb.isNull(root.get("parent")));
+            }
+            return cb.and(predicates.toArray(new Predicate[predicates.size()]));
+        };
+    }
 }

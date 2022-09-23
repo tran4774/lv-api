@@ -1,6 +1,6 @@
 package com.lv.api.validation.impl;
 
-import com.lv.api.constant.LandingISConstant;
+import com.lv.api.constant.Constants;
 import com.lv.api.validation.LocationKind;
 
 import javax.validation.ConstraintValidator;
@@ -21,9 +21,9 @@ public class LocationKindValidation implements ConstraintValidator<LocationKind,
         }
         if (locationKind != null) {
             switch (locationKind) {
-                case LandingISConstant.LOCATION_KIND_PROVINCE:
-                case LandingISConstant.LOCATION_KIND_DISTRICT:
-                case LandingISConstant.LOCATION_KIND_WARD:
+                case Constants.LOCATION_KIND_PROVINCE:
+                case Constants.LOCATION_KIND_DISTRICT:
+                case Constants.LOCATION_KIND_WARD:
                     return true;
                 default:
                     return false;

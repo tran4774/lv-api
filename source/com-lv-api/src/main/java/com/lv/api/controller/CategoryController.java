@@ -1,6 +1,6 @@
 package com.lv.api.controller;
 
-import com.lv.api.constant.LandingISConstant;
+import com.lv.api.constant.Constants;
 import com.lv.api.dto.ApiMessageDto;
 import com.lv.api.dto.ErrorCode;
 import com.lv.api.dto.ResponseListObj;
@@ -61,7 +61,7 @@ public class CategoryController extends ABasicController{
     @GetMapping(value = "/auto-complete", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<ResponseListObj<CategoryDto>> autoComplete(CategoryCriteria categoryCriteria) {
         ApiMessageDto<ResponseListObj<CategoryDto>> responseListObjApiMessageDto = new ApiMessageDto<>();
-        categoryCriteria.setStatus(LandingISConstant.STATUS_ACTIVE);
+        categoryCriteria.setStatus(Constants.STATUS_ACTIVE);
         Page<Category> listCategory = categoryRepository.findAll(categoryCriteria.getSpecification(), Pageable.unpaged());
         ResponseListObj<CategoryDto> responseListObj = new ResponseListObj<>();
         responseListObj.setData(categoryMapper.fromEntityListToCategoryDtoAutoComplete(listCategory.getContent()));

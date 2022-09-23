@@ -38,4 +38,15 @@ public interface LocationMapper {
     @Mapping(source = "name", target = "name")
     @Mapping(source = "status", target = "status")
     void fromUpdateLocationFormToEntity(UpdateLocationForm updateLocationForm, @MappingTarget Location location);
+
+    @Named("fromEntityToLocationDtoAutoCompleteMapper")
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "name", target = "name")
+    @Mapping(source = "kind", target = "kind")
+    LocationDto fromEntityToLocationDtoAutoComplete(Location location);
+
+    @Named("fromEntityListToLocationDtoListAutoCompleteMapper")
+    @IterableMapping(elementTargetType = LocationDto.class, qualifiedByName = "fromEntityToLocationDtoAutoCompleteMapper")
+    List<LocationDto> fromEntityListToLocationDtoListAutoComplete(List<Location> locations);
 }

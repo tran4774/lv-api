@@ -1,6 +1,6 @@
 package com.lv.api.controller;
 
-import com.lv.api.constant.LandingISConstant;
+import com.lv.api.constant.Constants;
 import com.lv.api.dto.ApiMessageDto;
 import com.lv.api.dto.ErrorCode;
 import com.lv.api.dto.ResponseListObj;
@@ -67,9 +67,9 @@ public class NewsController extends ABasicController{
     public ApiMessageDto<NewsDto> get(@PathVariable("id") Long id){
         Account currentUser = accountRepository.findById(getCurrentUserId()) .orElse(null);
         if(currentUser == null
-                || !currentUser.getKind().equals(LandingISConstant.USER_KIND_ADMIN)
-                && !currentUser.getKind().equals(LandingISConstant.USER_KIND_EMPLOYEE)
-                && !currentUser.getKind().equals(LandingISConstant.USER_KIND_COLLABORATOR)) {
+                || !currentUser.getKind().equals(Constants.USER_KIND_ADMIN)
+                && !currentUser.getKind().equals(Constants.USER_KIND_EMPLOYEE)
+                && !currentUser.getKind().equals(Constants.USER_KIND_COLLABORATOR)) {
             throw new RequestException(ErrorCode.NEWS_ERROR_UNAUTHORIZED);
         }
 
@@ -78,8 +78,8 @@ public class NewsController extends ABasicController{
         if(news == null){
             throw new RequestException(ErrorCode.NEWS_ERROR_NOT_FOUND);
         }
-        if(!currentUser.getKind().equals(LandingISConstant.USER_KIND_ADMIN)
-                && !news.getStatus().equals(LandingISConstant.STATUS_ACTIVE)) {
+        if(!currentUser.getKind().equals(Constants.USER_KIND_ADMIN)
+                && !news.getStatus().equals(Constants.STATUS_ACTIVE)) {
             throw new RequestException(ErrorCode.NEWS_ERROR_NOT_FOUND);
         }
 

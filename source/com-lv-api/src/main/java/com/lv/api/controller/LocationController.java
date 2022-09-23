@@ -15,10 +15,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/v1/locations")
@@ -31,6 +33,9 @@ public class LocationController extends ABasicController {
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<ResponseListObj<LocationDto>> list(@Valid LocationCriteria locationCriteria, Pageable pageable) {
+        if (!isAdmin()) {
+            throw new RequestException(ErrorCode.CATEGORY_ERROR_UNAUTHORIZED, "Not allowed get list.");
+        }
         ApiMessageDto<ResponseListObj<LocationDto>> responseListObjApiMessageDto = new ApiMessageDto<>();
         Page<Location> listLocation = locationRepository.findAll(locationCriteria.getSpecification(), pageable);
         ResponseListObj<LocationDto> responseListObj = new ResponseListObj<>();
@@ -42,6 +47,15 @@ public class LocationController extends ABasicController {
         responseListObjApiMessageDto.setData(responseListObj);
         responseListObjApiMessageDto.setMessage("Get list success");
         return responseListObjApiMessageDto;
+    }
+
+    @GetMapping(value = "auto-complete", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApiMessageDto<List<LocationDto>> autoComplete(LocationCriteria locationCriteria) {
+        List<Location> listLocation = locationRepository.findAll(locationCriteria.getSpecificationAutoComplete(), Sort.by(Sort.Order.asc("name")));
+        return new ApiMessageDto<>(
+                locationMapper.fromEntityListToLocationDtoListAutoComplete(listLocation),
+                "Get list success"
+        );
     }
 
     @GetMapping(value = "/get", produces = MediaType.APPLICATION_JSON_VALUE)

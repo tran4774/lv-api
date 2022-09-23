@@ -1,6 +1,6 @@
 package com.lv.api.controller;
 
-import com.lv.api.constant.LandingISConstant;
+import com.lv.api.constant.Constants;
 import com.lv.api.dto.ApiMessageDto;
 import com.lv.api.dto.ErrorCode;
 import com.lv.api.dto.ResponseListObj;
@@ -83,7 +83,7 @@ public class AccountController extends ABasicController{
 
         ApiMessageDto<LoginDto> apiMessageDto = new ApiMessageDto<>();
         Account account = accountRepository.findAccountByUsername(loginForm.getUsername());
-        if (account == null || !passwordEncoder.matches(loginForm.getPassword(), account.getPassword()) || !Objects.equals(account.getStatus() , LandingISConstant.STATUS_ACTIVE)) {
+        if (account == null || !passwordEncoder.matches(loginForm.getPassword(), account.getPassword()) || !Objects.equals(account.getStatus() , Constants.STATUS_ACTIVE)) {
             throw new RequestException(ErrorCode.GENERAL_ERROR_LOGIN_FAILED, "Login fail, check your username or password");
         }
 
@@ -125,7 +125,7 @@ public class AccountController extends ABasicController{
 
     private String getAppendStringRole (Account account) {
         String appendStringRole = "";
-        if(Objects.equals(account.getKind(), LandingISConstant.USER_KIND_ADMIN)){
+        if(Objects.equals(account.getKind(), Constants.USER_KIND_ADMIN)){
             appendStringRole = "/account/profile,/account/update_profile,/account/logout";
         } else {
             throw new RequestException(ErrorCode.GENERAL_ERROR_UNAUTHORIZED);
@@ -146,9 +146,9 @@ public class AccountController extends ABasicController{
             throw new RequestException(ErrorCode.GENERAL_ERROR_NOT_FOUND, "Username is existed");
         }
 
-        Integer groupKind = LandingISConstant.GROUP_KIND_EMPLOYEE;
-        if(createAccountAdminForm.getKind().equals(LandingISConstant.USER_KIND_ADMIN)) {
-            groupKind = LandingISConstant.GROUP_KIND_SUPER_ADMIN;
+        Integer groupKind = Constants.GROUP_KIND_EMPLOYEE;
+        if(createAccountAdminForm.getKind().equals(Constants.USER_KIND_ADMIN)) {
+            groupKind = Constants.GROUP_KIND_SUPER_ADMIN;
         }
         Group group = groupRepository.findFirstByKind(groupKind);
         if (group == null) {
@@ -326,12 +326,12 @@ public class AccountController extends ABasicController{
             throw new RequestException(ErrorCode.GENERAL_ERROR_NOT_FOUND, "account not found.");
         }
 
-        if(account.getAttemptCode() >= LandingISConstant.MAX_ATTEMPT_FORGET_PWD){
+        if(account.getAttemptCode() >= Constants.MAX_ATTEMPT_FORGET_PWD){
             throw new RequestException(ErrorCode.GENERAL_ERROR_LOCKED, "Account locked");
         }
 
         if(!account.getResetPwdCode().equals(forgetForm.getOtp()) ||
-                (new Date().getTime() - account.getResetPwdTime().getTime() >= LandingISConstant.MAX_TIME_FORGET_PWD)){
+                (new Date().getTime() - account.getResetPwdTime().getTime() >= Constants.MAX_TIME_FORGET_PWD)){
             //tang so lan
             account.setAttemptCode(account.getAttemptCode()+1);
             accountRepository.save(account);
@@ -360,14 +360,14 @@ public class AccountController extends ABasicController{
         }
 
         if(!account.getVerifyCode().equals(verifyForm.getOtp()) ||
-           (new Date().getTime() - account.getVerifyTime().getTime() >= LandingISConstant.MAX_TIME_VERIFY_ACCOUNT)){
+           (new Date().getTime() - account.getVerifyTime().getTime() >= Constants.MAX_TIME_VERIFY_ACCOUNT)){
 
             throw new RequestException(ErrorCode.GENERAL_ERROR_NOT_MATCH, "Otp not match");
         }
 
         account.setVerifyTime(null);
         account.setVerifyCode(null);
-        account.setStatus(LandingISConstant.STATUS_ACTIVE);
+        account.setStatus(Constants.STATUS_ACTIVE);
         accountRepository.save(account);
 
         apiMessageDto.setResult(true);
