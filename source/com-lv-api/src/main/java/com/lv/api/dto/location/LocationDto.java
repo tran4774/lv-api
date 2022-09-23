@@ -15,7 +15,7 @@ public class LocationDto {
     private Long id;
     @JsonProperty("name")
     private String name;
-    @JsonProperty("parent_id")
+    @JsonProperty("parentId")
     private Long parentId;
     @JsonProperty("kind")
     private Integer kind;

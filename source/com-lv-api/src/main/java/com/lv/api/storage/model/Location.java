@@ -18,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 public class Location extends Auditable<String> {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Column(name = "name")
     private String name;

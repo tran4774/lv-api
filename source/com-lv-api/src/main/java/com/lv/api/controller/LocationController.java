@@ -2,20 +2,23 @@ package com.lv.api.controller;
 
 import com.lv.api.dto.ApiMessageDto;
 import com.lv.api.dto.ErrorCode;
+import com.lv.api.dto.ResponseListObj;
 import com.lv.api.dto.location.LocationDto;
 import com.lv.api.exception.RequestException;
 import com.lv.api.form.location.CreateLocationForm;
 import com.lv.api.form.location.UpdateLocationForm;
 import com.lv.api.mapper.LocationMapper;
+import com.lv.api.storage.criteria.LocationCriteria;
 import com.lv.api.storage.model.Location;
 import com.lv.api.storage.repository.LocationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/v1/locations")
@@ -26,22 +29,19 @@ public class LocationController extends ABasicController {
     private final LocationRepository locationRepository;
     private final LocationMapper locationMapper;
 
-    @GetMapping(value = "/get-chill-list", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiMessageDto<List<LocationDto>> getChillLocation(@RequestParam(name = "id", required = false) Long id) {
-        List<Location> locations;
-        if (id == null) {
-            locations= locationRepository.findAll();
-        } else {
-            Location location = locationRepository.findLocationById(id)
-                    .orElseThrow(() -> new RequestException(ErrorCode.LOCATION_ERROR_NOTFOUND, "Location not found"));
-            locations = location.getSubLocationList();
-        }
-        if (locations != null) {
-            if(!locations.isEmpty())
-                return new ApiMessageDto<>(locationMapper.fromEntityListToLocationDtoList(locations), "List location success");
-            throw new RequestException(ErrorCode.LOCATION_ERROR_CHILL_LOCATION_EMPTY, "Chill location is empty");
-        }
-        throw new RequestException(ErrorCode.LOCATION_ERROR_NOTFOUND, "Location not found");
+    @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApiMessageDto<ResponseListObj<LocationDto>> list(@Valid LocationCriteria locationCriteria, Pageable pageable) {
+        ApiMessageDto<ResponseListObj<LocationDto>> responseListObjApiMessageDto = new ApiMessageDto<>();
+        Page<Location> listLocation = locationRepository.findAll(locationCriteria.getSpecification(), pageable);
+        ResponseListObj<LocationDto> responseListObj = new ResponseListObj<>();
+        responseListObj.setData(locationMapper.fromEntityListToLocationDtoList(listLocation.getContent()));
+        responseListObj.setPage(listLocation.getNumber());
+        responseListObj.setTotalPage(listLocation.getTotalPages());
+        responseListObj.setTotalElements(listLocation.getTotalElements());
+
+        responseListObjApiMessageDto.setData(responseListObj);
+        responseListObjApiMessageDto.setMessage("Get list success");
+        return responseListObjApiMessageDto;
     }
 
     @GetMapping(value = "/get", produces = MediaType.APPLICATION_JSON_VALUE)
