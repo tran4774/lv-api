@@ -39,7 +39,13 @@ public class ErrorCode {
      */
     public static final String NEWS_ERROR_UNAUTHORIZED = "ERROR-NEWS-000";
     public static final String NEWS_ERROR_NOT_FOUND = "ERROR-NEWS-001";
-    
+
+    /**
+     * Location error code
+     */
+    public static final String LOCATION_ERROR_NOTFOUND = "ERROR-LOCATION-000";
+    public static final String LOCATION_ERROR_CHILL_LOCATION_EMPTY = "ERROR-LOCATION-001";
+    public static final String LOCATION_ERROR_INVALID_PARENT = "ERROR-LOCATION-002";
 
     private ErrorCode() { throw new IllegalStateException("Utility class"); }
 }

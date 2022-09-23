@@ -35,6 +35,10 @@ public class LandingISConstant {
     public static final Integer GENDER_FEMALE = 2;
     public static final Integer GENDER_OTHER = 3;
 
+    public static final int LOCATION_KIND_PROVINCE = 1;
+    public static final int LOCATION_KIND_DISTRICT = 2;
+    public static final int LOCATION_KIND_WARD = 3;
+
     private LandingISConstant(){
         throw new IllegalStateException("Utility class");
     }
