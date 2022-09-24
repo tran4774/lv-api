@@ -89,10 +89,6 @@ public class LocationController extends ABasicController {
         }
         Location location = locationRepository.findLocationById(updateLocationForm.getId())
                 .orElseThrow(() -> new RequestException(ErrorCode.LOCATION_ERROR_NOTFOUND, "Location not found"));
-        if(location.getStatus().equals(updateLocationForm.getStatus())) {
-            location.getSubLocationList().forEach(l -> l.setStatus(updateLocationForm.getStatus()));
-            locationRepository.saveAll(location.getSubLocationList());
-        }
         locationMapper.fromUpdateLocationFormToEntity(updateLocationForm, location);
         locationRepository.save(location);
         return new ApiMessageDto<>("Update location successfully");
