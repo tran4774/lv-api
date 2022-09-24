@@ -4,7 +4,7 @@ package com.lv.api.controller;
 import com.lv.api.dto.ApiMessageDto;
 import com.lv.api.dto.UploadFileDto;
 import com.lv.api.form.UploadFileForm;
-import com.lv.api.service.LandingIsApiService;
+import com.lv.api.service.CommonApiService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -28,11 +28,11 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class FileController {
     @Autowired
-    LandingIsApiService landingIsApiService;
+    CommonApiService commonApiService;
     @PostMapping(value = "/upload" ,consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces= MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<UploadFileDto> upload(@Valid UploadFileForm uploadFileForm, BindingResult bindingResult) {
 
-        ApiMessageDto<UploadFileDto> apiMessageDto = landingIsApiService.storeFile(uploadFileForm);
+        ApiMessageDto<UploadFileDto> apiMessageDto = commonApiService.storeFile(uploadFileForm);
         apiMessageDto.setResult(true);
         return apiMessageDto;
 
@@ -41,7 +41,7 @@ public class FileController {
     @GetMapping("/download/{folder}/{fileName:.+}")
     @Cacheable("images")
     public ResponseEntity<Resource> downloadFile(@PathVariable String folder,@PathVariable String fileName, HttpServletRequest request) throws FileNotFoundException {
-        Resource  resource= landingIsApiService.loadFileAsResource(folder , fileName);
+        Resource  resource= commonApiService.loadFileAsResource(folder , fileName);
         String contentType = null;
         try {
             contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());

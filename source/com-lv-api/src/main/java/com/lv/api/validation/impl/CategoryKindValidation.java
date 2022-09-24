@@ -1,6 +1,6 @@
 package com.lv.api.validation.impl;
 
-import com.lv.api.constant.LandingISConstant;
+import com.lv.api.constant.Constants;
 import com.lv.api.validation.CategoryKind;
 
 import javax.validation.ConstraintValidator;
@@ -19,9 +19,9 @@ public class CategoryKindValidation implements ConstraintValidator<CategoryKind,
         }
         if (categoryKind != null) {
             switch (categoryKind) {
-                case LandingISConstant.CATEGORY_KIND_NEWS:
-                case LandingISConstant.CATEGORY_KIND_JOB:
-                case LandingISConstant.CATEGORY_KIND_DEPARTMENT:
+                case Constants.CATEGORY_KIND_NEWS:
+                case Constants.CATEGORY_KIND_JOB:
+                case Constants.CATEGORY_KIND_DEPARTMENT:
                     return true;
                 default:
                     return false;

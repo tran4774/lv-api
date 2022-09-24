@@ -1,6 +1,6 @@
 package com.lv.api.validation.impl;
 
-import com.lv.api.constant.LandingISConstant;
+import com.lv.api.constant.Constants;
 import com.lv.api.validation.Status;
 
 import javax.validation.ConstraintValidator;
@@ -19,10 +19,10 @@ public class StatusValidation  implements ConstraintValidator<Status, Integer> {
         if(status == null && allowNull){
             return true;
         }
-        if(!Objects.equals(status, LandingISConstant.STATUS_ACTIVE)
-                && !Objects.equals(status, LandingISConstant.STATUS_LOCK)
-                && !Objects.equals(status, LandingISConstant.STATUS_DELETE)
-                && !Objects.equals(status, LandingISConstant.STATUS_PENDING)){
+        if(!Objects.equals(status, Constants.STATUS_ACTIVE)
+                && !Objects.equals(status, Constants.STATUS_LOCK)
+                && !Objects.equals(status, Constants.STATUS_DELETE)
+                && !Objects.equals(status, Constants.STATUS_PENDING)){
             return false;
         }
         return true;

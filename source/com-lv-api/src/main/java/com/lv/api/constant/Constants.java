@@ -3,7 +3,7 @@ package com.lv.api.constant;
 
 import com.lv.api.utils.ConfigurationService;
 
-public class LandingISConstant {
+public class Constants {
     public static final String ROOT_DIRECTORY =  ConfigurationService.getInstance().getString("file.upload-dir","/tmp/upload");
 
     public static final Integer USER_KIND_ADMIN = 1;
@@ -35,7 +35,11 @@ public class LandingISConstant {
     public static final Integer GENDER_FEMALE = 2;
     public static final Integer GENDER_OTHER = 3;
 
-    private LandingISConstant(){
+    public static final int LOCATION_KIND_PROVINCE = 1;
+    public static final int LOCATION_KIND_DISTRICT = 2;
+    public static final int LOCATION_KIND_WARD = 3;
+
+    private Constants(){
         throw new IllegalStateException("Utility class");
     }
 

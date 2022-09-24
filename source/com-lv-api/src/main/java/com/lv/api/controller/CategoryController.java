@@ -1,6 +1,6 @@
 package com.lv.api.controller;
 
-import com.lv.api.constant.LandingISConstant;
+import com.lv.api.constant.Constants;
 import com.lv.api.dto.ApiMessageDto;
 import com.lv.api.dto.ErrorCode;
 import com.lv.api.dto.ResponseListObj;
@@ -9,7 +9,7 @@ import com.lv.api.exception.RequestException;
 import com.lv.api.form.category.CreateCategoryForm;
 import com.lv.api.form.category.UpdateCategoryForm;
 import com.lv.api.mapper.CategoryMapper;
-import com.lv.api.service.LandingIsApiService;
+import com.lv.api.service.CommonApiService;
 import com.lv.api.storage.criteria.CategoryCriteria;
 import com.lv.api.storage.model.Category;
 import com.lv.api.storage.repository.CategoryRepository;
@@ -37,7 +37,7 @@ public class CategoryController extends ABasicController{
     CategoryMapper categoryMapper;
 
     @Autowired
-    LandingIsApiService landingIsApiService;
+    CommonApiService commonApiService;
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<ResponseListObj<CategoryDto>> list(CategoryCriteria categoryCriteria, Pageable pageable) {
@@ -61,7 +61,7 @@ public class CategoryController extends ABasicController{
     @GetMapping(value = "/auto-complete", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<ResponseListObj<CategoryDto>> autoComplete(CategoryCriteria categoryCriteria) {
         ApiMessageDto<ResponseListObj<CategoryDto>> responseListObjApiMessageDto = new ApiMessageDto<>();
-        categoryCriteria.setStatus(LandingISConstant.STATUS_ACTIVE);
+        categoryCriteria.setStatus(Constants.STATUS_ACTIVE);
         Page<Category> listCategory = categoryRepository.findAll(categoryCriteria.getSpecification(), Pageable.unpaged());
         ResponseListObj<CategoryDto> responseListObj = new ResponseListObj<>();
         responseListObj.setData(categoryMapper.fromEntityListToCategoryDtoAutoComplete(listCategory.getContent()));
@@ -123,7 +123,7 @@ public class CategoryController extends ABasicController{
             categoryRepository.saveAll(category.getCategoryList());
         }
         if(StringUtils.isNoneBlank(category.getImage()) && !updateCategoryForm.getCategoryImage().equals(category.getImage())) {
-            landingIsApiService.deleteFile(category.getImage());
+            commonApiService.deleteFile(category.getImage());
         }
         categoryMapper.fromUpdateCategoryFormToEntity(updateCategoryForm, category);
         categoryRepository.save(category);
@@ -142,7 +142,7 @@ public class CategoryController extends ABasicController{
         if(category == null) {
             throw new RequestException(ErrorCode.CATEGORY_ERROR_NOT_FOUND, "Not found category");
         }
-        landingIsApiService.deleteFile(category.getImage());
+        commonApiService.deleteFile(category.getImage());
         categoryRepository.delete(category);
         result.setMessage("Delete category success");
         return result;

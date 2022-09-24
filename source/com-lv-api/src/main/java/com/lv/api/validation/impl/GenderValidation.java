@@ -1,6 +1,6 @@
 package com.lv.api.validation.impl;
 
-import com.lv.api.constant.LandingISConstant;
+import com.lv.api.constant.Constants;
 import com.lv.api.validation.Gender;
 
 import javax.validation.ConstraintValidator;
@@ -20,9 +20,9 @@ public class GenderValidation implements ConstraintValidator<Gender, Integer> {
         if(gender == null && allowNull){
             return true;
         }
-        if(!Objects.equals(gender, LandingISConstant.GENDER_FEMALE)
-                && !Objects.equals(gender, LandingISConstant.GENDER_MALE)
-                && !Objects.equals(gender, LandingISConstant.GENDER_OTHER)){
+        if(!Objects.equals(gender, Constants.GENDER_FEMALE)
+                && !Objects.equals(gender, Constants.GENDER_MALE)
+                && !Objects.equals(gender, Constants.GENDER_OTHER)){
             return false;
         }
         return true;
