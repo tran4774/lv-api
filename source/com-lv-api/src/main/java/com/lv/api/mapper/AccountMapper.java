@@ -29,6 +29,7 @@ public interface AccountMapper {
     void mappingFormUpdateAdminToEntity(UpdateAccountAdminForm updateAccountAdminForm, @MappingTarget Account account);
 
     @Mapping(source = "fullName", target = "fullName")
+    @BeanMapping(ignoreByDefault = true)
     void mappingFormUpdateProfileToEntity(UpdateProfileAdminForm updateProfileAdminForm, @MappingTarget Account account);
 
     @Mapping(source = "id", target = "id")

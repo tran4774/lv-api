@@ -47,5 +47,11 @@ public class ErrorCode {
     public static final String LOCATION_ERROR_CHILL_LOCATION_EMPTY = "ERROR-LOCATION-001";
     public static final String LOCATION_ERROR_INVALID_PARENT = "ERROR-LOCATION-002";
 
+    /**
+     * Rank error code
+     */
+    public static final String RANK_ERROR_NOT_FOUND = "ERROR-RANK-000";
+    public static final String RANK_ERROR_DUPLICATE_NAME = "ERROR-RANK-001";
+
     private ErrorCode() { throw new IllegalStateException("Utility class"); }
 }

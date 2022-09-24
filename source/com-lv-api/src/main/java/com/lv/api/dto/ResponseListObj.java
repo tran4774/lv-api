@@ -1,6 +1,8 @@
 package com.lv.api.dto;
 
 import lombok.Data;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -10,4 +12,14 @@ public class ResponseListObj<T> {
     private Integer page;
     private Integer totalPage;
     private Long totalElements;
+
+    public ResponseListObj() {
+
+    }
+    public ResponseListObj(List<T> data, Page page) {
+        this.data = data;
+        this.page = page.getNumber();
+        this.totalPage = page.getTotalPages();
+        this.totalElements = page.getTotalElements();
+    }
 }
