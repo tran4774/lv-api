@@ -19,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -47,7 +48,7 @@ public class RankController extends ABasicController {
 
     @GetMapping(value = "/auto-complete", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<List<RankDto>> autoComplete(RankCriteria rankCriteria) {
-        List<Rank> rankList = rankRepository.findAll(rankCriteria.getSpecificationAutoComplete(), Sort.by(Sort.Order.asc("name")));
+        List<Rank> rankList = rankRepository.findAll(rankCriteria.getSpecificationAutoComplete(), Sort.by(Sort.Order.asc("target")));
         return new ApiMessageDto<>(
                 rankMapper.fromListEntityToListRankDto(rankList),
                 "Auto complete rank success"
@@ -62,7 +63,7 @@ public class RankController extends ABasicController {
     }
 
     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiMessageDto<String> create(@Valid @RequestBody CreateRankForm createRankForm) {
+    public ApiMessageDto<String> create(@Valid @RequestBody CreateRankForm createRankForm, BindingResult bindingResult) {
         if (!isAdmin()) {
             throw new RequestException(ErrorCode.CATEGORY_ERROR_UNAUTHORIZED, "Not allowed to create.");
         }
@@ -76,7 +77,7 @@ public class RankController extends ABasicController {
     }
 
     @PutMapping(value = "/update", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiMessageDto<String> update(@Valid @RequestBody UpdateRankForm updateRankForm) {
+    public ApiMessageDto<String> update(@Valid @RequestBody UpdateRankForm updateRankForm, BindingResult bindingResult) {
         if (!isAdmin()) {
             throw new RequestException(ErrorCode.CATEGORY_ERROR_UNAUTHORIZED, "Not allowed to update.");
         }

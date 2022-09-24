@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -32,7 +33,7 @@ public class LocationController extends ABasicController {
     private final LocationMapper locationMapper;
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiMessageDto<ResponseListObj<LocationDto>> list(@Valid LocationCriteria locationCriteria, Pageable pageable) {
+    public ApiMessageDto<ResponseListObj<LocationDto>> list(@Valid LocationCriteria locationCriteria, BindingResult bindingResult, Pageable pageable) {
         if (!isAdmin()) {
             throw new RequestException(ErrorCode.CATEGORY_ERROR_UNAUTHORIZED, "Not allowed get list.");
         }
@@ -66,7 +67,7 @@ public class LocationController extends ABasicController {
     }
 
     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiMessageDto<String> create(@Valid @RequestBody CreateLocationForm createLocationForm) {
+    public ApiMessageDto<String> create(@Valid @RequestBody CreateLocationForm createLocationForm, BindingResult bindingResult) {
         if (!isAdmin()) {
             throw new RequestException(ErrorCode.CATEGORY_ERROR_UNAUTHORIZED, "Not allowed to create.");
         }
@@ -83,7 +84,7 @@ public class LocationController extends ABasicController {
     }
 
     @PutMapping(value = "/update", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiMessageDto<String> update(@Valid @RequestBody UpdateLocationForm updateLocationForm) {
+    public ApiMessageDto<String> update(@Valid @RequestBody UpdateLocationForm updateLocationForm, BindingResult bindingResult) {
         if (!isAdmin()) {
             throw new RequestException(ErrorCode.CATEGORY_ERROR_UNAUTHORIZED, "Not allowed to create.");
         }
@@ -96,7 +97,7 @@ public class LocationController extends ABasicController {
 
     @DeleteMapping(value = "/delete/{id}")
     public ApiMessageDto<String> delete(@PathVariable("id") Long id) {
-        if(!isAdmin()){
+        if (!isAdmin()) {
             throw new RequestException(ErrorCode.CATEGORY_ERROR_NOT_FOUND, "Not allowed to delete.");
         }
         Location location = locationRepository.findLocationById(id)
