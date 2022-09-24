@@ -14,7 +14,7 @@ import com.lv.api.intercepter.MyAuthentication;
 import com.lv.api.jwt.JWTUtils;
 import com.lv.api.jwt.UserJwt;
 import com.lv.api.mapper.AccountMapper;
-import com.lv.api.service.LandingIsApiService;
+import com.lv.api.service.CommonApiService;
 import com.lv.api.storage.criteria.AccountCriteria;
 import com.lv.api.storage.model.Account;
 import com.lv.api.storage.model.Group;
@@ -55,7 +55,7 @@ public class AccountController extends ABasicController{
     GroupRepository groupRepository;
 
     @Autowired
-    LandingIsApiService landingIsApiService;
+    CommonApiService commonApiService;
 
     @Autowired
     AccountMapper accountMapper;
@@ -98,7 +98,7 @@ public class AccountController extends ABasicController{
 
 
         qrJwt.setUsername(account.getUsername());
-        qrJwt.setPemission(landingIsApiService.convertGroupToUri(account.getGroup().getPermissions())+appendStringRole);
+        qrJwt.setPemission(commonApiService.convertGroupToUri(account.getGroup().getPermissions())+appendStringRole);
         qrJwt.setUserKind(account.getKind());
         qrJwt.setIsSuperAdmin(account.getIsSuperAdmin());
 
@@ -186,7 +186,7 @@ public class AccountController extends ABasicController{
         if (StringUtils.isNoneBlank(updateAccountAdminForm.getAvatarPath())) {
             if(!updateAccountAdminForm.getAvatarPath().equals(account.getAvatarPath())){
                 //delete old image
-                landingIsApiService.deleteFile(account.getAvatarPath());
+                commonApiService.deleteFile(account.getAvatarPath());
             }
             account.setAvatarPath(updateAccountAdminForm.getAvatarPath());
         }
@@ -231,7 +231,7 @@ public class AccountController extends ABasicController{
         if (StringUtils.isNoneBlank(updateProfileAdminForm.getAvatar())) {
             if(!updateProfileAdminForm.getAvatar().equals(account.getAvatarPath())){
                 //delete old image
-                landingIsApiService.deleteFile(account.getAvatarPath());
+                commonApiService.deleteFile(account.getAvatarPath());
             }
             account.setAvatarPath(updateProfileAdminForm.getAvatar());
         }
@@ -278,7 +278,7 @@ public class AccountController extends ABasicController{
         if (account == null) {
             throw new RequestException(ErrorCode.GENERAL_ERROR_NOT_FOUND, "Account not found");
         }
-        landingIsApiService.deleteFile(account.getAvatarPath());
+        commonApiService.deleteFile(account.getAvatarPath());
         accountRepository.deleteById(id);
         apiMessageDto.setMessage("Delete Account success");
         return apiMessageDto;
@@ -292,14 +292,14 @@ public class AccountController extends ABasicController{
             throw new RequestException(ErrorCode.GENERAL_ERROR_NOT_FOUND, "Account not found.");
         }
 
-        String otp = landingIsApiService.getOTPForgetPassword();
+        String otp = commonApiService.getOTPForgetPassword();
         account.setAttemptCode(0);
         account.setResetPwdCode(otp);
         account.setResetPwdTime(new Date());
         accountRepository.save(account);
 
         //send email
-        landingIsApiService.sendEmail(account.getEmail(),"OTP: "+otp, "Reset password",false);
+        commonApiService.sendEmail(account.getEmail(),"OTP: "+otp, "Reset password",false);
 
         ForgetPasswordDto forgetPasswordDto = new ForgetPasswordDto();
         String hash = AESUtils.encrypt (account.getId()+";"+otp, true);

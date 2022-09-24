@@ -9,7 +9,7 @@ import com.lv.api.exception.RequestException;
 import com.lv.api.form.news.CreateNewsForm;
 import com.lv.api.form.news.UpdateNewsForm;
 import com.lv.api.mapper.NewsMapper;
-import com.lv.api.service.LandingIsApiService;
+import com.lv.api.service.CommonApiService;
 import com.lv.api.storage.criteria.NewsCriteria;
 import com.lv.api.storage.model.Account;
 import com.lv.api.storage.model.News;
@@ -39,7 +39,7 @@ public class NewsController extends ABasicController{
     NewsMapper newsMapper;
 
     @Autowired
-    LandingIsApiService landingIsApiService;
+    CommonApiService commonApiService;
 
     @Autowired
     AccountRepository accountRepository;
@@ -119,7 +119,7 @@ public class NewsController extends ABasicController{
         if (StringUtils.isNoneBlank(updateNewsForm.getAvatar())) {
             if(!updateNewsForm.getAvatar().equals(news.getAvatar())){
                 //delete old image
-                landingIsApiService.deleteFile(news.getAvatar());
+                commonApiService.deleteFile(news.getAvatar());
             }
             news.setAvatar(updateNewsForm.getAvatar());
         }
@@ -141,7 +141,7 @@ public class NewsController extends ABasicController{
         if(news == null){
             throw new RequestException(ErrorCode.NEWS_ERROR_NOT_FOUND);
         }
-        landingIsApiService.deleteFile(news.getAvatar());
+        commonApiService.deleteFile(news.getAvatar());
         newsRepository.delete(news);
         result.setMessage("Delete success");
         return result;

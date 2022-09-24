@@ -30,7 +30,7 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class LandingIsApiService {
+public class CommonApiService {
 
     static final String[] UPLOAD_TYPES = new String[]{"LOGO", "AVATAR","IMAGE", "DOCUMENT"};
 
