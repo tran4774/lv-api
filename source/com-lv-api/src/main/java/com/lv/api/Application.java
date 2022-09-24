@@ -111,6 +111,7 @@ public class Application {
         results.add(Permission.builder().action("/v1/locations/delete").description("Delete location").name("Delete location").nameGroup("Locations").showMenu(false).build());
         //RANK
         results.add(Permission.builder().action("/v1/ranks/list").description("Get list rank").name("Get list rank").nameGroup("Ranks").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/ranks/auto-complete").description("Auto complete rank").name("Auto complete rank").nameGroup("Ranks").showMenu(false).build());
         results.add(Permission.builder().action("/v1/ranks/get").description("Get rank").name("Get location").nameGroup("Ranks").showMenu(false).build());
         results.add(Permission.builder().action("/v1/ranks/create").description("Create rank").name("Create rank").nameGroup("Ranks").showMenu(false).build());
         results.add(Permission.builder().action("/v1/ranks/update").description("Update rank").name("Update rank").nameGroup("Ranks").showMenu(false).build());

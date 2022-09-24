@@ -36,4 +36,16 @@ public class RankCriteria {
             return cb.and(predicates.toArray(new Predicate[predicates.size()]));
         };
     }
+
+    public Specification<Rank> getSpecificationAutoComplete() {
+        return (root, criteriaQuery, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            if(!StringUtils.isEmpty(getName())) {
+                predicates.add(cb.like(cb.lower(root.get("name")), getName().toLowerCase() + "%"));
+            }
+
+            return cb.and(predicates.toArray(new Predicate[predicates.size()]));
+        };
+    }
 }

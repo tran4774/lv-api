@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,6 +43,15 @@ public class RankController extends ABasicController {
         Page<Rank> pageRanks = rankRepository.findAll(rankCriteria.getSpecification(), pageable);
         List<RankDto> listRankDto = rankMapper.fromListEntityToListRankDto(pageRanks.getContent());
         return new ApiMessageDto<>(new ResponseListObj<>(listRankDto, pageRanks), "Get list success");
+    }
+
+    @GetMapping(value = "/auto-complete", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApiMessageDto<List<RankDto>> autoComplete(RankCriteria rankCriteria) {
+        List<Rank> rankList = rankRepository.findAll(rankCriteria.getSpecificationAutoComplete(), Sort.by(Sort.Order.asc("name")));
+        return new ApiMessageDto<>(
+                rankMapper.fromListEntityToListRankDto(rankList),
+                "Auto complete rank success"
+        );
     }
 
     @GetMapping(value = "/get/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
