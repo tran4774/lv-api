@@ -44,7 +44,7 @@ public class ErrorCode {
      * Location error code
      */
     public static final String LOCATION_ERROR_NOTFOUND = "ERROR-LOCATION-000";
-    public static final String LOCATION_ERROR_CHILL_LOCATION_EMPTY = "ERROR-LOCATION-001";
+    public static final String LOCATION_ERROR_INVALID = "ERROR-LOCATION-001";
     public static final String LOCATION_ERROR_INVALID_PARENT = "ERROR-LOCATION-002";
 
     /**
@@ -52,6 +52,21 @@ public class ErrorCode {
      */
     public static final String RANK_ERROR_NOT_FOUND = "ERROR-RANK-000";
     public static final String RANK_ERROR_DUPLICATE_NAME = "ERROR-RANK-001";
+
+    /**
+     * Account error code
+     */
+    public static final String ACCOUNT_ERROR_EXISTED = "ERROR-ACCOUNT-000";
+
+    /**
+     * Customer error code
+     */
+    public static final String CUSTOMER_ERROR_UNAUTHORIZED = "ERROR_CUSTOMER-000";
+
+    public static final String CUSTOMER_ERROR_NOT_FOUND = "ERROR-CUSTOMER-001";
+    public static final String CUSTOMER_ADDRESS_ERROR_NOT_FOUND = "ERROR_CUSTOMER-002";
+    public static final String CUSTOMER_ADDRESS_ERROR_UNAUTHORIZED = "ERROR_CUSTOMER-003";
+    public static final String CUSTOMER_ADDRESS_ERROR_CANNOT_DELETE = "ERROR_CUSTOMER-004";
 
     private ErrorCode() { throw new IllegalStateException("Utility class"); }
 }

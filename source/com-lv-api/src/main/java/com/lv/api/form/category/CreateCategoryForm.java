@@ -18,7 +18,7 @@ public class CreateCategoryForm {
     @ApiModelProperty(required = true)
     private String categoryDescription;
 
-    @ApiModelProperty(required = true)
+    @ApiModelProperty(required = false)
     private String categoryImage;
 
     @ApiModelProperty(name = "categoryOrdering")

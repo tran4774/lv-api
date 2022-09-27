@@ -7,6 +7,8 @@ import com.lv.api.form.account.UpdateAccountAdminForm;
 import com.lv.api.form.account.UpdateProfileAdminForm;
 import com.lv.api.storage.model.Account;
 import org.mapstruct.*;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 
 import java.util.List;
 
@@ -32,6 +34,7 @@ public interface AccountMapper {
     @BeanMapping(ignoreByDefault = true)
     void mappingFormUpdateProfileToEntity(UpdateProfileAdminForm updateProfileAdminForm, @MappingTarget Account account);
 
+    @Named("fromEntityToAccountDtoMapper")
     @Mapping(source = "id", target = "id")
     @Mapping(source = "kind", target = "kind")
     @Mapping(source = "username", target = "username")
@@ -70,4 +73,9 @@ public interface AccountMapper {
     @BeanMapping(ignoreByDefault = true)
     @Named("adminAutoCompleteMapping")
     AccountAdminDto fromEntityToAccountAdminDtoAutoComplete(Account account);
+
+    @Named("passwordEncoder")
+    default String encodePassword(String password) {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(password);
+    }
 }
