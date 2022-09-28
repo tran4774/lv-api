@@ -122,7 +122,8 @@ public class Application {
         results.add(Permission.builder().action("/v1/customer/get").description("Get customer").name("Get customer").nameGroup("Customer").showMenu(false).build());
         results.add(Permission.builder().action("/v1/customer/profile").description("Profile customer").name("Profile customer").nameGroup("Customer").showMenu(false).build());
         results.add(Permission.builder().action("/v1/customer/create").description("Create customer").name("Create customer").nameGroup("Customer").showMenu(false).build());
-        results.add(Permission.builder().action("/v1/customer/update").description("Update customer").name("Update customer").nameGroup("Customer").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/customer/update").description("Update customer admin").name("Update customer admin").nameGroup("Customer").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/customer/update-profile").description("Update customer profile").name("Update customer profile").nameGroup("Customer").showMenu(false).build());
         results.add(Permission.builder().action("/v1/customer/delete").description("Delete customer").name("Delete customer").nameGroup("Customer").showMenu(false).build());
         results.add(Permission.builder().action("/v1/customer/address/list").description("List customer's addresses").name("List customer's addresses").nameGroup("Customer").showMenu(false).build());
         results.add(Permission.builder().action("/v1/customer/address/get").description("Get customer's addresses").name("Get customer's addresses").nameGroup("Customer").showMenu(false).build());

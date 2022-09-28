@@ -3,10 +3,7 @@ package com.lv.api.mapper;
 import com.lv.api.dto.customer.CustomerAddressDto;
 import com.lv.api.dto.customer.CustomerAdminDto;
 import com.lv.api.dto.customer.CustomerDto;
-import com.lv.api.form.customer.CreateAddressForm;
-import com.lv.api.form.customer.RegisterCustomerForm;
-import com.lv.api.form.customer.UpdateAddressForm;
-import com.lv.api.form.customer.UpdateCustomerForm;
+import com.lv.api.form.customer.*;
 import com.lv.api.storage.model.Customer;
 import com.lv.api.storage.model.CustomerAddress;
 import org.mapstruct.*;
@@ -31,6 +28,19 @@ public interface CustomerMapper {
     @Mapping(source = "gender", target = "gender")
     @Mapping(source = "birthday", target = "birthday")
     Customer fromCustomerRegisterFormToEntity(RegisterCustomerForm registerCustomerForm);
+
+    @Named("fromCustomerCreateFormToEntity")
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(source = "username", target = "account.username")
+    @Mapping(source = "password", target = "account.password", qualifiedByName = "passwordEncoder")
+    @Mapping(source = "email", target = "account.email")
+    @Mapping(source = "phone", target = "account.phone")
+    @Mapping(source = "fullName", target = "account.fullName")
+    @Mapping(source = "gender", target = "gender")
+    @Mapping(source = "birthday", target = "birthday")
+    @Mapping(source = "avatar", target = "account.avatarPath")
+    @Mapping(source = "status", target = "account.status")
+    Customer fromCustomerCreateFormToEntity(CreateCustomerForm createCustomerForm);
 
     @Named("fromCustomerEntityToDtoMapper")
     @BeanMapping(ignoreByDefault = true)
@@ -60,11 +70,24 @@ public interface CustomerMapper {
 
     @Named("fromUpdateCustomerFormToEntityMapper")
     @BeanMapping(ignoreByDefault = true)
+    @Mapping(source = "username", target = "account.username")
+    @Mapping(source = "password", target = "account.password", qualifiedByName = "passwordEncoder")
+    @Mapping(source = "email", target = "account.email")
+    @Mapping(source = "phone", target = "account.phone")
+    @Mapping(source = "fullName", target = "account.fullName")
+    @Mapping(source = "gender", target = "gender")
+    @Mapping(source = "birthday", target = "birthday")
+    @Mapping(source = "avatar", target = "account.avatarPath")
+    @Mapping(source = "status", target = "account.status")
+    void fromUpdateCustomerFormToEntity(UpdateCustomerForm updateProfileCustomerForm, @MappingTarget Customer customer);
+
+    @Named("fromUpdateProfileCustomerFormToEntityMapper")
+    @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "fullName", target = "account.fullName")
     @Mapping(source = "gender", target = "gender")
     @Mapping(source = "avatar", target = "account.avatarPath")
     @Mapping(source = "birthday", target = "birthday")
-    void fromUpdateCustomerFormToEntity(UpdateCustomerForm updateCustomerForm, @MappingTarget Customer customer);
+    void fromUpdateProfileCustomerFormToEntity(UpdateProfileCustomerForm updateProfileCustomerForm, @MappingTarget Customer customer);
 
     @Named("fromCustomerAddressEntityToDtoMapper")
     @BeanMapping(ignoreByDefault = true)

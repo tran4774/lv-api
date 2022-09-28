@@ -14,11 +14,7 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-public class UpdateCustomerForm {
-    @NotNull(message = "Id can not be null")
-    @ApiModelProperty(value = "id", required = true)
-    private Long id;
-
+public class CreateCustomerForm {
     @NotBlank(message = "Username can not be null")
     @ApiModelProperty(name = "username", required = true)
     private String username;

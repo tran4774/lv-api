@@ -8,10 +8,7 @@ import com.lv.api.dto.customer.CustomerAddressDto;
 import com.lv.api.dto.customer.CustomerAdminDto;
 import com.lv.api.dto.customer.CustomerDto;
 import com.lv.api.exception.RequestException;
-import com.lv.api.form.customer.CreateAddressForm;
-import com.lv.api.form.customer.RegisterCustomerForm;
-import com.lv.api.form.customer.UpdateAddressForm;
-import com.lv.api.form.customer.UpdateCustomerForm;
+import com.lv.api.form.customer.*;
 import com.lv.api.mapper.CustomerMapper;
 import com.lv.api.service.CommonApiService;
 import com.lv.api.storage.criteria.CustomerAddressCriteria;
@@ -74,7 +71,7 @@ public class CustomerController extends ABasicController {
     @GetMapping(value = "/get/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<CustomerAdminDto> get(@PathVariable("id") Long id) {
         if (!isAdmin()) {
-            throw new RequestException(ErrorCode.CUSTOMER_ERROR_UNAUTHORIZED, "Not allowed get list.");
+            throw new RequestException(ErrorCode.CUSTOMER_ERROR_UNAUTHORIZED, "Not allowed to get customer's profile");
         }
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new RequestException(ErrorCode.CUSTOMER_ERROR_NOT_FOUND, "Customer not found"));
@@ -84,15 +81,37 @@ public class CustomerController extends ABasicController {
     @GetMapping(value = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<CustomerDto> profile() {
         if (!isCustomer()) {
-            throw new RequestException(ErrorCode.CUSTOMER_ERROR_UNAUTHORIZED, "Not allowed to get customer's address");
+            throw new RequestException(ErrorCode.CUSTOMER_ERROR_UNAUTHORIZED, "Not allowed to get customer's profile");
         }
         Customer customer = customerRepository.findById(getCurrentUserId())
                 .orElseThrow(() -> new RequestException(ErrorCode.CUSTOMER_ERROR_NOT_FOUND, "Customer not found"));
         return new ApiMessageDto<>(customerMapper.fromCustomerEntityToDto(customer), "Get customer successfully");
     }
 
-    @PostMapping(value = {"/create", "/register"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiMessageDto<String> create(@Valid @RequestBody RegisterCustomerForm registerCustomerForm, BindingResult bindingResult) {
+    @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApiMessageDto<String> create(@Valid @RequestBody CreateCustomerForm createCustomerForm, BindingResult bindingResult) {
+        if (!isAdmin()) {
+            throw new RequestException(ErrorCode.CUSTOMER_ERROR_UNAUTHORIZED, "Not allowed to create customer");
+        }
+        if (accountRepository.countAccountByUsernameOrEmailOrPhone(
+                createCustomerForm.getUsername(), createCustomerForm.getEmail(), createCustomerForm.getPhone()
+        ) > 0)
+            throw new RequestException(ErrorCode.ACCOUNT_ERROR_EXISTED, "Account is existed");
+
+        Group groupCustomer = groupRepository.findFirstByKind(Constants.GROUP_KIND_CUSTOMER);
+        if (groupCustomer == null) {
+            throw new RequestException(ErrorCode.GROUP_ERROR_NOT_FOUND);
+        }
+        Customer customer = customerMapper.fromCustomerCreateFormToEntity(createCustomerForm);
+        customer.getAccount().setGroup(groupCustomer);
+        customer.getAccount().setKind(Constants.USER_KIND_CUSTOMER);
+        //rank?
+        customerRepository.save(customer);
+        return new ApiMessageDto<>("Create customer successfully");
+    }
+
+    @PostMapping(value = "register", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApiMessageDto<String> register(@Valid @RequestBody RegisterCustomerForm registerCustomerForm, BindingResult bindingResult) {
         if (accountRepository.countAccountByUsernameOrEmailOrPhone(
                 registerCustomerForm.getUsername(), registerCustomerForm.getEmail(), registerCustomerForm.getPhone()
         ) > 0)
@@ -112,7 +131,7 @@ public class CustomerController extends ABasicController {
 
     @PutMapping(value = "/update", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> update(@Valid @RequestBody UpdateCustomerForm updateCustomerForm, BindingResult bindingResult) {
-        if (!isAdmin() && !isCustomer()) {
+        if (!isAdmin()) {
             throw new RequestException(ErrorCode.CUSTOMER_ERROR_UNAUTHORIZED, "Not allowed get list.");
         }
         Customer customer = customerRepository.findById(updateCustomerForm.getId())
@@ -121,6 +140,22 @@ public class CustomerController extends ABasicController {
             commonApiService.deleteFile(customer.getAccount().getAvatarPath());
         customerMapper.fromUpdateCustomerFormToEntity(updateCustomerForm, customer);
         customerRepository.save(customer);
+        accountRepository.save(customer.getAccount());
+        return new ApiMessageDto<>("Update customer successfully");
+    }
+
+    @PutMapping(value = "/update-profile", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApiMessageDto<String> updateProfile(@Valid @RequestBody UpdateProfileCustomerForm updateProfileCustomerForm, BindingResult bindingResult) {
+        if (!isCustomer()) {
+            throw new RequestException(ErrorCode.CUSTOMER_ERROR_UNAUTHORIZED, "Not allowed get list.");
+        }
+        Customer customer = customerRepository.findById(updateProfileCustomerForm.getId())
+                .orElseThrow(() -> new RequestException(ErrorCode.CUSTOMER_ERROR_NOT_FOUND, "Customer not found"));
+        if (StringUtils.isNoneBlank(updateProfileCustomerForm.getAvatar()) && !updateProfileCustomerForm.getAvatar().equals(customer.getAccount().getAvatarPath()))
+            commonApiService.deleteFile(customer.getAccount().getAvatarPath());
+        customerMapper.fromUpdateProfileCustomerFormToEntity(updateProfileCustomerForm, customer);
+        customerRepository.save(customer);
+        accountRepository.save(customer.getAccount());
         return new ApiMessageDto<>("Update customer successfully");
     }
 
