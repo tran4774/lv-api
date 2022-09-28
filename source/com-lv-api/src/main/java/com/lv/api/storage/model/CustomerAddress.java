@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Setter
 @Entity
 @Table(name = TablePrefix.PREFIX_TABLE + "customer_address")
-public class CustomerAddress extends Auditable<String> {
+public class CustomerAddress {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

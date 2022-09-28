@@ -59,7 +59,7 @@ public class LocationController extends ABasicController {
         );
     }
 
-    @GetMapping(value = "/get{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/get/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<LocationDto> getLocation(@PathVariable("id") Long id) {
         Location location = locationRepository.findLocationById(id)
                 .orElseThrow(() -> new RequestException(ErrorCode.LOCATION_ERROR_NOTFOUND, "Location not found"));

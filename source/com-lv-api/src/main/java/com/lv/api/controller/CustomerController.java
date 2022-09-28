@@ -173,20 +173,7 @@ public class CustomerController extends ABasicController {
 
     @GetMapping(value = "/address/list", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<ResponseListObj<CustomerAddressDto>> listAddressAdmin(CustomerAddressCriteria customerAddressCriteria, Pageable pageable) {
-        if (!isAdmin()) {
-            throw new RequestException(ErrorCode.CUSTOMER_ADDRESS_ERROR_UNAUTHORIZED, "Not allowed get list.");
-        }
         Page<CustomerAddress> customerAddressPage = customerAddressRepository.findAll(customerAddressCriteria.getSpecification(), pageable);
-        List<CustomerAddressDto> customerAddressDtos = customerMapper.fromListCustomerAddressEntityToListDto(customerAddressPage.getContent());
-        return new ApiMessageDto<>(new ResponseListObj<>(customerAddressDtos, customerAddressPage), "Get list successfully");
-    }
-
-    @GetMapping(value = "/address/list-addresses", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiMessageDto<ResponseListObj<CustomerAddressDto>> listAddress(Pageable pageable) {
-        if (!isCustomer()) {
-            throw new RequestException(ErrorCode.CUSTOMER_ADDRESS_ERROR_UNAUTHORIZED, "Not allowed get list.");
-        }
-        Page<CustomerAddress> customerAddressPage = customerAddressRepository.findCustomerAddressByCustomerId(getCurrentUserId(), pageable);
         List<CustomerAddressDto> customerAddressDtos = customerMapper.fromListCustomerAddressEntityToListDto(customerAddressPage.getContent());
         return new ApiMessageDto<>(new ResponseListObj<>(customerAddressDtos, customerAddressPage), "Get list successfully");
     }
