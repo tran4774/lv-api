@@ -116,7 +116,21 @@ public class Application {
         results.add(Permission.builder().action("/v1/ranks/create").description("Create rank").name("Create rank").nameGroup("Ranks").showMenu(false).build());
         results.add(Permission.builder().action("/v1/ranks/update").description("Update rank").name("Update rank").nameGroup("Ranks").showMenu(false).build());
         results.add(Permission.builder().action("/v1/ranks/delete").description("Delete rank").name("Delete rank").nameGroup("Ranks").showMenu(false).build());
-
+        //CUSTOMER
+        results.add(Permission.builder().action("/v1/customer/list").description("List customer").name("List customer").nameGroup("Customer").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/customer/auto-complete").description("Auto complete customer").name("Auto complete customer").nameGroup("Customer").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/customer/get").description("Get customer").name("Get customer").nameGroup("Customer").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/customer/profile").description("Profile customer").name("Profile customer").nameGroup("Customer").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/customer/create").description("Create customer").name("Create customer").nameGroup("Customer").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/customer/update").description("Update customer admin").name("Update customer admin").nameGroup("Customer").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/customer/update-profile").description("Update customer profile").name("Update customer profile").nameGroup("Customer").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/customer/delete").description("Delete customer").name("Delete customer").nameGroup("Customer").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/customer/address/list").description("List customer's addresses").name("List customer's addresses").nameGroup("Customer").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/customer/address/get").description("Get customer's addresses").name("Get customer's addresses").nameGroup("Customer").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/customer/address/create").description("Create customer's address").name("Create customer's addresses").nameGroup("Customer").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/customer/address/update").description("Update customer's address").name("Update customer's addresses").nameGroup("Customer").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/customer/address/delete").description("Delete customer's address").name("Delete customer's addresses").nameGroup("Customer").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/customer/address/default").description("Set default customer's address").name("Set default customer's address").nameGroup("Customer").showMenu(false).build());
 
         return permissionRepository.saveAll(results);
     }
