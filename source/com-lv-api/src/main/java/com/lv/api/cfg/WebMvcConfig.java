@@ -1,6 +1,8 @@
 package com.lv.api.cfg;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.lv.api.intercepter.MyIntercepter;
@@ -69,6 +71,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
         builder.dateFormat(new SimpleDateFormat(DATE_TIME_FORMAT));
         builder.serializers(new LocalDateSerializer(DateTimeFormatter.ofPattern(DATE_FORMAT)));
         builder.serializers(new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT)));
+        builder.deserializers(new LocalDateDeserializer(DateTimeFormatter.ofPattern(DATE_FORMAT)));
+        builder.deserializers(new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT)));
         builder.indentOutput(true);
         converters.add(new MappingJackson2HttpMessageConverter(builder.build()));
         converters.add(new MappingJackson2XmlHttpMessageConverter(builder.createXmlMapper(true).build()));
