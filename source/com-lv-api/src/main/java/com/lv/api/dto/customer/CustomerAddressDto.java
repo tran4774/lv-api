@@ -16,4 +16,5 @@ public class CustomerAddressDto {
     private String receiverFullName;
     private String phone;
     private Boolean isDefault;
+    private String note;
 }

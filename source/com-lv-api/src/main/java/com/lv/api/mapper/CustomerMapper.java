@@ -70,7 +70,6 @@ public interface CustomerMapper {
 
     @Named("fromUpdateCustomerFormToEntityMapper")
     @BeanMapping(ignoreByDefault = true)
-    @Mapping(source = "username", target = "account.username")
     @Mapping(source = "password", target = "account.password", qualifiedByName = "passwordEncoder")
     @Mapping(source = "email", target = "account.email")
     @Mapping(source = "phone", target = "account.phone")
@@ -99,6 +98,7 @@ public interface CustomerMapper {
     @Mapping(source = "receiverFullName", target = "receiverFullName")
     @Mapping(source = "phone", target = "phone")
     @Mapping(source = "isDefault", target = "isDefault")
+    @Mapping(source = "note", target = "note")
     CustomerAddressDto fromCustomerAddressEntityToDto(CustomerAddress customerAddress);
 
     @Named("fromListCustomerAddressEntityToListDtoMapper")
@@ -111,6 +111,7 @@ public interface CustomerMapper {
     @Mapping(source = "receiverFullName", target = "receiverFullName")
     @Mapping(source = "phone", target = "phone")
     @Mapping(source = "isDefault", target = "isDefault")
+    @Mapping(source = "note", target = "note")
     CustomerAddress fromCreateAddressFormToCustomerAddress(CreateAddressForm createAddressForm);
 
     @Named("fromUpdateAddressFormToCustomerAddressMapper")
@@ -119,5 +120,6 @@ public interface CustomerMapper {
     @Mapping(source = "receiverFullName", target = "receiverFullName")
     @Mapping(source = "phone", target = "phone")
     @Mapping(source = "isDefault", target = "isDefault")
+    @Mapping(source = "note", target = "note")
     void fromUpdateAddressFormToCustomerAddress(UpdateAddressForm updateAddressForm, @MappingTarget CustomerAddress customerAddress);
 }

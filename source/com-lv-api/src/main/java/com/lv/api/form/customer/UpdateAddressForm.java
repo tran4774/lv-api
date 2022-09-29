@@ -41,4 +41,7 @@ public class UpdateAddressForm {
     @NotNull(message = "Default address can not be null")
     @ApiModelProperty(name = "isDefault", required = true)
     private Boolean isDefault;
+
+    @ApiModelProperty(name = "note")
+    private String note;
 }

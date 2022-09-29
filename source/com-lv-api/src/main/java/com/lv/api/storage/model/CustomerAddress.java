@@ -42,4 +42,7 @@ public class CustomerAddress {
 
     @Column(name = "is_default")
     private Boolean isDefault;
+
+    @Column(name = "note")
+    private String note;
 }
