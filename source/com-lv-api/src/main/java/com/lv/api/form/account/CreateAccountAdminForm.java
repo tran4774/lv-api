@@ -32,7 +32,7 @@ public class CreateAccountAdminForm {
     @ApiModelProperty(name = "phone")
     private String phone;
 
-    @NotNull(message = "kind cannot be null")
-    @ApiModelProperty(name = "kind", required = true)
-    private Integer kind;
+    @NotNull(message = "Group id cannot be null")
+    @ApiModelProperty(name = "groupId", required = true)
+    private Long groupId;
 }

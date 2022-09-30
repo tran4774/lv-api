@@ -102,10 +102,8 @@ public class EmployeeController extends ABasicController {
                 createEmployeeForm.getUsername(), createEmployeeForm.getEmail(), createEmployeeForm.getPhone()
         ) > 0)
             throw new RequestException(ErrorCode.ACCOUNT_ERROR_EXISTED, "Account is existed");
-        Group groupEmployee = groupRepository.findFirstByKind(Constants.GROUP_KIND_EMPLOYEE);
-        if (groupEmployee == null) {
-            throw new RequestException(ErrorCode.GROUP_ERROR_NOT_FOUND);
-        }
+        Group groupEmployee = groupRepository.findById(createEmployeeForm.getGroupId())
+                .orElseThrow(() -> new RequestException(ErrorCode.GENERAL_ERROR_NOT_FOUND, "Group does not exist!"));
         Category department = categoryRepository.findById(createEmployeeForm.getDepartmentId())
                 .orElseThrow(() -> new RequestException(ErrorCode.CATEGORY_ERROR_NOT_FOUND, "Department not found"));
         Category job = categoryRepository.findById(createEmployeeForm.getJobId())

@@ -46,4 +46,8 @@ public class CreateEmployeeForm {
     @NotNull(message = "Job can not be null")
     @ApiModelProperty(name = "jobId")
     private Long jobId;
+
+    @NotNull(message = "Group id can not be null")
+    @ApiModelProperty(name = "groupId")
+    private Long groupId;
 }
