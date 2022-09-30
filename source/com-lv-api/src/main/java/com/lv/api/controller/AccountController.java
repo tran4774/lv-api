@@ -129,6 +129,8 @@ public class AccountController extends ABasicController{
             appendStringRole = "/account/profile,/account/update_profile,/account/logout";
         } else if(Objects.equals(account.getKind(), Constants.USER_KIND_CUSTOMER)) {
             appendStringRole = "/customer/profile,/customer/update-profile,/account/logout";
+        } else if(Objects.equals(account.getKind(), Constants.USER_KIND_EMPLOYEE)) {
+            appendStringRole = "/employee/profile,/employee/update-profile,/account/logout";
         } else {
             throw new RequestException(ErrorCode.GENERAL_ERROR_UNAUTHORIZED);
         }

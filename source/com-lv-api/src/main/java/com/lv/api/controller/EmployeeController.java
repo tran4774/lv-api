@@ -113,6 +113,8 @@ public class EmployeeController extends ABasicController {
         Employee employee = employeeMapper.fromCreateEmployeeFormToEntity(createEmployeeForm);
         employee.setDepartment(department);
         employee.setJob(job);
+        employee.getAccount().setGroup(groupEmployee);
+        employee.getAccount().setKind(Constants.GROUP_KIND_EMPLOYEE);
         employeeRepository.save(employee);
         return new ApiMessageDto<>("Create employee successfully");
     }
