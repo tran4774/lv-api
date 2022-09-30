@@ -131,6 +131,15 @@ public class Application {
         results.add(Permission.builder().action("/v1/customer/address/update").description("Update customer's address").name("Update customer's addresses").nameGroup("Customer").showMenu(false).build());
         results.add(Permission.builder().action("/v1/customer/address/delete").description("Delete customer's address").name("Delete customer's addresses").nameGroup("Customer").showMenu(false).build());
         results.add(Permission.builder().action("/v1/customer/address/default").description("Set default customer's address").name("Set default customer's address").nameGroup("Customer").showMenu(false).build());
+        //EMPLOYEE
+        results.add(Permission.builder().action("/v1/employee/list").description("List employee").name("List employee").nameGroup("Employee").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/employee/auto-complete").description("Auto complete employee").name("Auto complete employee").nameGroup("Employee").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/employee/get").description("Get employee").name("Get employee").nameGroup("Employee").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/employee/profile").description("Profile employee").name("Profile employee").nameGroup("Employee").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/employee/create").description("Create employee").name("Create employee").nameGroup("Employee").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/employee/update").description("Update employee").name("Update employee").nameGroup("Employee").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/employee/update-profile").description("Update employee profile").name("Update employee profile").nameGroup("Employee").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/employee/delete").description("Delete employee").name("Delete employee").nameGroup("Employee").showMenu(false).build());
 
         return permissionRepository.saveAll(results);
     }

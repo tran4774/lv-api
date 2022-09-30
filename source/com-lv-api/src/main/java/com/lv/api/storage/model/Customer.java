@@ -17,7 +17,7 @@ public class Customer extends Auditable<String> {
     @Column(name = "account_id")
     private Long id;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "account_id", referencedColumnName = "id")
     @MapsId
     private Account account;

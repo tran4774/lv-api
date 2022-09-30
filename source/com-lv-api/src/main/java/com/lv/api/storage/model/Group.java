@@ -34,4 +34,6 @@ public class Group extends  Auditable<String>{
                     referencedColumnName = "id"))
     private List<Permission> permissions = new ArrayList<>();
 
+    private Boolean show = true;
+
 }

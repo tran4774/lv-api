@@ -134,6 +134,10 @@ public class CustomerController extends ABasicController {
         if (!isAdmin()) {
             throw new RequestException(ErrorCode.CUSTOMER_ERROR_UNAUTHORIZED, "Not allowed get list.");
         }
+        if (accountRepository.countAccountByPhoneOrEmail(
+                updateCustomerForm.getPhone(), updateCustomerForm.getEmail()
+        ) > 1)
+            throw new RequestException(ErrorCode.ACCOUNT_ERROR_EXISTED, "Account is existed");
         Customer customer = customerRepository.findById(updateCustomerForm.getId())
                 .orElseThrow(() -> new RequestException(ErrorCode.CUSTOMER_ERROR_NOT_FOUND, "Customer not found"));
         if (StringUtils.isNoneBlank(updateCustomerForm.getAvatar()) && !updateCustomerForm.getAvatar().equals(customer.getAccount().getAvatarPath()))

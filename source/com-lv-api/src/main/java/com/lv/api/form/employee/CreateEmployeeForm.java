@@ -1,6 +1,5 @@
-package com.lv.api.form.customer;
+package com.lv.api.form.employee;
 
-import com.lv.api.validation.Gender;
 import com.lv.api.validation.Status;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -10,14 +9,13 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
 
 @Getter
 @Setter
-public class UpdateCustomerForm {
-    @NotNull(message = "Id can not be null")
-    @ApiModelProperty(value = "id", required = true)
-    private Long id;
+public class CreateEmployeeForm {
+    @NotBlank(message = "Username can not be null")
+    @ApiModelProperty(name = "username", required = true)
+    private String username;
 
     @NotEmpty(message = "Password cant not be null")
     @ApiModelProperty(name = "Password", required = true)
@@ -35,16 +33,21 @@ public class UpdateCustomerForm {
     @ApiModelProperty(name = "fullName", required = true)
     private String fullName;
 
-    @Gender
-    @ApiModelProperty(name = "gender", required = true)
-    private Integer gender;
-
-    @NotNull(message = "Birthday can not be null")
-    @ApiModelProperty(name = "birthday", required = true)
-    private LocalDate birthday;
-
+    @ApiModelProperty(name = "avatar")
     private String avatar;
 
     @Status
     private Integer status = 1;
+
+    @NotNull(message = "Department can not be null")
+    @ApiModelProperty(name = "departmentId")
+    private Long departmentId;
+
+    @NotNull(message = "Job can not be null")
+    @ApiModelProperty(name = "jobId")
+    private Long jobId;
+
+    @NotNull(message = "Group id can not be null")
+    @ApiModelProperty(name = "groupId")
+    private Long groupId;
 }

@@ -17,6 +17,7 @@ public class GroupCriteria {
     private String name;
     private String description;
     private Integer kind;
+    private Boolean show;
 
     public Specification<Group> getSpecification() {
         return new Specification<Group>() {
@@ -36,6 +37,9 @@ public class GroupCriteria {
                 }
                 if(!StringUtils.isEmpty(getDescription())){
                     predicates.add(cb.like(cb.lower(root.get("description")), "%"+getDescription().toLowerCase()+"%"));
+                }
+                if(getShow() != null) {
+                    predicates.add(cb.equal(root.get("show"), getShow()));
                 }
                 return cb.and(predicates.toArray(new Predicate[predicates.size()]));
             }

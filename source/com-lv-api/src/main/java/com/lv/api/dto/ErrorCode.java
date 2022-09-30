@@ -57,6 +57,8 @@ public class ErrorCode {
      * Account error code
      */
     public static final String ACCOUNT_ERROR_EXISTED = "ERROR-ACCOUNT-000";
+    public static final String ACCOUNT_ERROR_PHONE_EXISTED = "ERROR-ACCOUNT-001";
+    public static final String ACCOUNT_ERROR_EMAIL_EXISTED = "ERROR-ACCOUNT-002";
 
     /**
      * Customer error code
@@ -67,6 +69,13 @@ public class ErrorCode {
     public static final String CUSTOMER_ADDRESS_ERROR_NOT_FOUND = "ERROR_CUSTOMER-002";
     public static final String CUSTOMER_ADDRESS_ERROR_UNAUTHORIZED = "ERROR_CUSTOMER-003";
     public static final String CUSTOMER_ADDRESS_ERROR_CANNOT_DELETE = "ERROR_CUSTOMER-004";
+
+    /**
+     * Employee error code
+     */
+    public static final String EMPLOYEE_ERROR_UNAUTHORIZED = "ERROR_EMPLOYEE-000";
+
+    public static final String EMPLOYEE_ERROR_NOT_FOUND = "ERROR-EMPLOYEE-001";
 
     private ErrorCode() { throw new IllegalStateException("Utility class"); }
 }
