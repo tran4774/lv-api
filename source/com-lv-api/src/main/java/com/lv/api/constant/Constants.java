@@ -39,8 +39,8 @@ public class Constants {
     public static final int LOCATION_KIND_DISTRICT = 2;
     public static final int LOCATION_KIND_WARD = 3;
 
-    public static final String APP_CUSTOMER = "APP_WEB_CUSTOMER";
-    public static final String APP_CMS = "APP_WEB_CMS";
+    public static final String APP_WEB_CUSTOMER = "APP_WEB_CUSTOMER";
+    public static final String APP_WEB_CMS = "APP_WEB_CMS";
 
     private Constants(){
         throw new IllegalStateException("Utility class");
