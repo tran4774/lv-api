@@ -26,6 +26,7 @@ public interface EmployeeMapper {
     @Mapping(source = "fullName", target = "account.fullName")
     @Mapping(source = "avatar", target = "account.avatarPath")
     @Mapping(source = "status", target = "account.status")
+    @Mapping(source = "note", target = "note")
     Employee fromCreateEmployeeFormToEntity(CreateEmployeeForm createEmployeeForm);
 
     @Named("fromEmployeeEntityToDtoMapper")
@@ -63,5 +64,6 @@ public interface EmployeeMapper {
     @Mapping(source = "fullName", target = "account.fullName")
     @Mapping(source = "avatar", target = "account.avatarPath")
     @Mapping(source = "status", target = "account.status")
+    @Mapping(source = "note", target = "note")
     void fromUpdateEmployeeFormToEntity(UpdateEmployeeForm updateEmployeeForm, @MappingTarget Employee employee);
 }

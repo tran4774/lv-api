@@ -50,4 +50,7 @@ public class CreateEmployeeForm {
     @NotNull(message = "Group id can not be null")
     @ApiModelProperty(name = "groupId")
     private Long groupId;
+
+    @ApiModelProperty(name = "note")
+    private String note;
 }

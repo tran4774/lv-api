@@ -15,7 +15,8 @@ import java.util.List;
 
 @Getter
 @Setter
-public class CustomerAddressCriteria {
+public class
+CustomerAddressCriteria {
     private Long id;
     private Long provinceId;
     private Long districtId;
