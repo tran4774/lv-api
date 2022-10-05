@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/v1/ranks")
@@ -83,10 +84,11 @@ public class RankController extends ABasicController {
         }
         Rank rank = rankRepository.findById(updateRankForm.getId())
                 .orElseThrow(() -> new RequestException(ErrorCode.RANK_ERROR_NOT_FOUND, "Rank not found"));
-        rankRepository.findByName(updateRankForm.getName())
-                .ifPresent(r -> {
-                    throw new RequestException(ErrorCode.RANK_ERROR_DUPLICATE_NAME, String.format("Rank %s was existed", r.getName()));
-                });
+        if(!Objects.equals(updateRankForm.getName(), rank.getName()))
+            rankRepository.findByName(updateRankForm.getName())
+                    .ifPresent(r -> {
+                            throw new RequestException(ErrorCode.RANK_ERROR_DUPLICATE_NAME, String.format("Rank %s was existed", r.getName()));
+                    });
         if (StringUtils.isNoneBlank(rank.getAvatar()) && !updateRankForm.getAvatar().equals(rank.getAvatar())) {
             commonApiService.deleteFile(rank.getAvatar());
         }
