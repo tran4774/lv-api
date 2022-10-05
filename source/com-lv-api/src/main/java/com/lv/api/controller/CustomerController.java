@@ -48,9 +48,6 @@ public class CustomerController extends ABasicController {
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<ResponseListObj<CustomerAdminDto>> list(CustomerCriteria customerCriteria, BindingResult bindingResult, Pageable pageable) {
-        if (!isAdmin()) {
-            throw new RequestException(ErrorCode.CUSTOMER_ERROR_UNAUTHORIZED, "Not allowed get list.");
-        }
         Page<Customer> customerPage = customerRepository.findAll(customerCriteria.getSpecification(), pageable);
         List<CustomerAdminDto> customerDtoList = customerMapper.fromListCustomerEntityToListAdminDto(customerPage.getContent());
         return new ApiMessageDto<>(new ResponseListObj<>(customerDtoList, customerPage), "Get list successfully");
@@ -58,9 +55,6 @@ public class CustomerController extends ABasicController {
 
     @GetMapping(value = "/auto-complete", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<List<CustomerDto>> autoComplete(CustomerCriteria customerCriteria) {
-        if (!isAdmin()) {
-            throw new RequestException(ErrorCode.CUSTOMER_ERROR_UNAUTHORIZED, "Not allowed get list.");
-        }
         Page<Customer> customerPage = customerRepository.findAll(customerCriteria.getSpecification(), Pageable.unpaged());
         return new ApiMessageDto<>(
                 customerMapper.fromListCustomerEntityToListDto(customerPage.getContent()),
@@ -70,9 +64,6 @@ public class CustomerController extends ABasicController {
 
     @GetMapping(value = "/get/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<CustomerAdminDto> get(@PathVariable("id") Long id) {
-        if (!isAdmin()) {
-            throw new RequestException(ErrorCode.CUSTOMER_ERROR_UNAUTHORIZED, "Not allowed to get customer's profile");
-        }
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new RequestException(ErrorCode.CUSTOMER_ERROR_NOT_FOUND, "Customer not found"));
         return new ApiMessageDto<>(customerMapper.fromCustomerEntityToAdminDto(customer), "Get customer successfully");
@@ -80,9 +71,6 @@ public class CustomerController extends ABasicController {
 
     @GetMapping(value = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<CustomerDto> profile() {
-        if (!isCustomer()) {
-            throw new RequestException(ErrorCode.CUSTOMER_ERROR_UNAUTHORIZED, "Not allowed to get customer's profile");
-        }
         Customer customer = customerRepository.findById(getCurrentUserId())
                 .orElseThrow(() -> new RequestException(ErrorCode.CUSTOMER_ERROR_NOT_FOUND, "Customer not found"));
         return new ApiMessageDto<>(customerMapper.fromCustomerEntityToDto(customer), "Get customer successfully");
@@ -90,9 +78,6 @@ public class CustomerController extends ABasicController {
 
     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> create(@Valid @RequestBody CreateCustomerForm createCustomerForm, BindingResult bindingResult) {
-        if (!isAdmin()) {
-            throw new RequestException(ErrorCode.CUSTOMER_ERROR_UNAUTHORIZED, "Not allowed to create customer");
-        }
         if (accountRepository.countAccountByUsernameOrEmailOrPhone(
                 createCustomerForm.getUsername(), createCustomerForm.getEmail(), createCustomerForm.getPhone()
         ) > 0)
@@ -131,9 +116,6 @@ public class CustomerController extends ABasicController {
 
     @PutMapping(value = "/update", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> update(@Valid @RequestBody UpdateCustomerForm updateCustomerForm, BindingResult bindingResult) {
-        if (!isAdmin()) {
-            throw new RequestException(ErrorCode.CUSTOMER_ERROR_UNAUTHORIZED, "Not allowed get list.");
-        }
         if (accountRepository.countAccountByPhoneOrEmail(
                 updateCustomerForm.getPhone(), updateCustomerForm.getEmail()
         ) > 1)
