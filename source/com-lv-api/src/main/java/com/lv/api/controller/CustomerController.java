@@ -48,7 +48,7 @@ public class CustomerController extends ABasicController {
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<ResponseListObj<CustomerAdminDto>> list(CustomerCriteria customerCriteria, BindingResult bindingResult, Pageable pageable) {
-        if (!isAdmin()) {
+        if (!isAdmin() && !isEmployee()) {
             throw new RequestException(ErrorCode.CUSTOMER_ERROR_UNAUTHORIZED, "Not allowed get list.");
         }
         Page<Customer> customerPage = customerRepository.findAll(customerCriteria.getSpecification(), pageable);
@@ -58,7 +58,7 @@ public class CustomerController extends ABasicController {
 
     @GetMapping(value = "/auto-complete", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<List<CustomerDto>> autoComplete(CustomerCriteria customerCriteria) {
-        if (!isAdmin()) {
+        if (!isAdmin() && !isEmployee()) {
             throw new RequestException(ErrorCode.CUSTOMER_ERROR_UNAUTHORIZED, "Not allowed get list.");
         }
         Page<Customer> customerPage = customerRepository.findAll(customerCriteria.getSpecification(), Pageable.unpaged());
@@ -70,7 +70,7 @@ public class CustomerController extends ABasicController {
 
     @GetMapping(value = "/get/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<CustomerAdminDto> get(@PathVariable("id") Long id) {
-        if (!isAdmin()) {
+        if (!isAdmin() && !isEmployee()) {
             throw new RequestException(ErrorCode.CUSTOMER_ERROR_UNAUTHORIZED, "Not allowed to get customer's profile");
         }
         Customer customer = customerRepository.findById(id)
@@ -90,7 +90,7 @@ public class CustomerController extends ABasicController {
 
     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> create(@Valid @RequestBody CreateCustomerForm createCustomerForm, BindingResult bindingResult) {
-        if (!isAdmin()) {
+        if (!isAdmin() && !isEmployee()) {
             throw new RequestException(ErrorCode.CUSTOMER_ERROR_UNAUTHORIZED, "Not allowed to create customer");
         }
         if (accountRepository.countAccountByUsernameOrEmailOrPhone(
@@ -131,7 +131,7 @@ public class CustomerController extends ABasicController {
 
     @PutMapping(value = "/update", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> update(@Valid @RequestBody UpdateCustomerForm updateCustomerForm, BindingResult bindingResult) {
-        if (!isAdmin()) {
+        if (!isAdmin() && !isEmployee()) {
             throw new RequestException(ErrorCode.CUSTOMER_ERROR_UNAUTHORIZED, "Not allowed get list.");
         }
         if (accountRepository.countAccountByPhoneOrEmail(

@@ -86,7 +86,9 @@ public class AccountController extends ABasicController{
         if (account == null || !passwordEncoder.matches(loginForm.getPassword(), account.getPassword()) || !Objects.equals(account.getStatus() , Constants.STATUS_ACTIVE)) {
             throw new RequestException(ErrorCode.GENERAL_ERROR_LOGIN_FAILED, "Login fail, check your username or password");
         }
-
+        if (loginForm.getApp() == Constants.APP_CMS && account.getKind() == Constants.USER_KIND_CUSTOMER) {
+                throw new RequestException(ErrorCode.PERMISSION_ERROR_UNAUTHORIZED, "Login fail");
+        }
         //Tao xong tra ve cai gi?
         LocalDate parsedDate = LocalDate.now();
         parsedDate = parsedDate.plusDays(7);

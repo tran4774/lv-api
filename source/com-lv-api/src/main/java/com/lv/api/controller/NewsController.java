@@ -46,9 +46,6 @@ public class NewsController extends ABasicController{
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<ResponseListObj<NewsDto>> list(NewsCriteria newsCriteria, Pageable pageable) {
-        if(!isAdmin()){
-            throw new RequestException(ErrorCode.NEWS_ERROR_UNAUTHORIZED);
-        }
         ApiMessageDto<ResponseListObj<NewsDto>> responseListObjApiMessageDto = new ApiMessageDto<>();
 
         Page<News> list = newsRepository.findAll(newsCriteria.getSpecification(), pageable);
@@ -90,9 +87,6 @@ public class NewsController extends ABasicController{
 
     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> create(@Valid @RequestBody CreateNewsForm createNewsForm, BindingResult bindingResult) {
-        if(!isAdmin()){
-            throw new RequestException(ErrorCode.NEWS_ERROR_UNAUTHORIZED);
-        }
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
 
         News news = newsMapper.fromCreateNewsFormToEntity(createNewsForm);
@@ -104,9 +98,6 @@ public class NewsController extends ABasicController{
 
     @PutMapping(value = "/update", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> update(@Valid @RequestBody UpdateNewsForm updateNewsForm, BindingResult bindingResult) {
-        if(!isAdmin()){
-            throw new RequestException(ErrorCode.NEWS_ERROR_UNAUTHORIZED);
-        }
 
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         News news = newsRepository.findById(updateNewsForm.getId()).orElse(null);
@@ -133,9 +124,6 @@ public class NewsController extends ABasicController{
 
     @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> delete(@PathVariable("id") Long id){
-        if(!isAdmin()){
-            throw new RequestException(ErrorCode.NEWS_ERROR_UNAUTHORIZED);
-        }
         ApiMessageDto<String> result = new ApiMessageDto<>();
         News news = newsRepository.findById(id).orElse(null);
         if(news == null){
