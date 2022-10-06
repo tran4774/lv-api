@@ -147,9 +147,6 @@ public class CustomerController extends ABasicController {
 
     @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> delete(@PathVariable("id") Long id) {
-        if (!isAdmin()) {
-            throw new RequestException(ErrorCode.CUSTOMER_ERROR_UNAUTHORIZED, "Not allowed to delete.");
-        }
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new RequestException(ErrorCode.CUSTOMER_ERROR_NOT_FOUND, "Customer not found"));
         commonApiService.deleteFile(customer.getAccount().getAvatarPath());
@@ -169,8 +166,6 @@ public class CustomerController extends ABasicController {
         CustomerAddress customerAddress = customerAddressRepository.findById(id)
                 .orElseThrow(() -> new RequestException(ErrorCode.CUSTOMER_ADDRESS_ERROR_NOT_FOUND, "Customer's address not found"));
         Customer customer = customerAddress.getCustomer();
-        if (Objects.equals(customer.getAccount().getKind(), Constants.USER_KIND_CUSTOMER) && customer.getId() != getCurrentUserId())
-            throw new RequestException(ErrorCode.CUSTOMER_ADDRESS_ERROR_NOT_FOUND, "Customer's address not found");
         return new ApiMessageDto<>(customerMapper.fromCustomerAddressEntityToDto(customerAddress), "Get list successfully");
     }
 

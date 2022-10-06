@@ -34,9 +34,6 @@ public class LocationController extends ABasicController {
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<ResponseListObj<LocationDto>> list(@Valid LocationCriteria locationCriteria, BindingResult bindingResult, Pageable pageable) {
-        if (!isAdmin()) {
-            throw new RequestException(ErrorCode.CATEGORY_ERROR_UNAUTHORIZED, "Not allowed get list.");
-        }
         ApiMessageDto<ResponseListObj<LocationDto>> responseListObjApiMessageDto = new ApiMessageDto<>();
         Page<Location> listLocation = locationRepository.findAll(locationCriteria.getSpecification(), pageable);
         ResponseListObj<LocationDto> responseListObj = new ResponseListObj<>();
@@ -68,9 +65,6 @@ public class LocationController extends ABasicController {
 
     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> create(@Valid @RequestBody CreateLocationForm createLocationForm, BindingResult bindingResult) {
-        if (!isAdmin()) {
-            throw new RequestException(ErrorCode.CATEGORY_ERROR_UNAUTHORIZED, "Not allowed to create.");
-        }
         Location parentLocation = null;
         if (createLocationForm.getParentId() != null) {
             parentLocation = locationRepository.findLocationById(createLocationForm.getParentId())
@@ -85,9 +79,6 @@ public class LocationController extends ABasicController {
 
     @PutMapping(value = "/update", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> update(@Valid @RequestBody UpdateLocationForm updateLocationForm, BindingResult bindingResult) {
-        if (!isAdmin()) {
-            throw new RequestException(ErrorCode.CATEGORY_ERROR_UNAUTHORIZED, "Not allowed to create.");
-        }
         Location location = locationRepository.findLocationById(updateLocationForm.getId())
                 .orElseThrow(() -> new RequestException(ErrorCode.LOCATION_ERROR_NOTFOUND, "Location not found"));
         locationMapper.fromUpdateLocationFormToEntity(updateLocationForm, location);
@@ -97,9 +88,6 @@ public class LocationController extends ABasicController {
 
     @DeleteMapping(value = "/delete/{id}")
     public ApiMessageDto<String> delete(@PathVariable("id") Long id) {
-        if (!isAdmin()) {
-            throw new RequestException(ErrorCode.CATEGORY_ERROR_NOT_FOUND, "Not allowed to delete.");
-        }
         Location location = locationRepository.findLocationById(id)
                 .orElseThrow(() -> new RequestException(ErrorCode.LOCATION_ERROR_NOTFOUND, "Location not found"));
         locationRepository.delete(location);

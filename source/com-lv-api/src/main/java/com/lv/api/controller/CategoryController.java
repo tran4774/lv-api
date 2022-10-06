@@ -41,9 +41,6 @@ public class CategoryController extends ABasicController{
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<ResponseListObj<CategoryDto>> list(CategoryCriteria categoryCriteria, Pageable pageable) {
-        if (!isAdmin()) {
-            throw new RequestException(ErrorCode.CATEGORY_ERROR_UNAUTHORIZED, "Not allowed get list.");
-        }
         ApiMessageDto<ResponseListObj<CategoryDto>> responseListObjApiMessageDto = new ApiMessageDto<>();
 
         Page<Category> listCategory = categoryRepository.findAll(categoryCriteria.getSpecification(), pageable);
@@ -73,9 +70,6 @@ public class CategoryController extends ABasicController{
 
     @GetMapping(value = "/get/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<CategoryDto> get(@PathVariable("id") Long id) {
-        if(!isAdmin()){
-            throw new RequestException(ErrorCode.CATEGORY_ERROR_UNAUTHORIZED, "Not allowed get.");
-        }
         ApiMessageDto<CategoryDto> result = new ApiMessageDto<>();
 
         Category category = categoryRepository.findById(id).orElse(null);
@@ -89,9 +83,6 @@ public class CategoryController extends ABasicController{
 
     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> create(@Valid @RequestBody CreateCategoryForm createCategoryForm, BindingResult bindingResult) {
-        if(!isAdmin()){
-            throw new RequestException(ErrorCode.CATEGORY_ERROR_UNAUTHORIZED, "Not allowed to create.");
-        }
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
 
         Category category = categoryMapper.fromCreateCategoryFormToEntity(createCategoryForm);
@@ -110,9 +101,6 @@ public class CategoryController extends ABasicController{
 
     @PutMapping(value = "/update", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> update(@Valid @RequestBody UpdateCategoryForm updateCategoryForm, BindingResult bindingResult) {
-        if(!isAdmin()){
-            throw new RequestException(ErrorCode.CATEGORY_ERROR_UNAUTHORIZED, "Not allowed to update.");
-        }
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         Category category = categoryRepository.findById(updateCategoryForm.getId()).orElse(null);
         if(category == null) {
@@ -133,9 +121,6 @@ public class CategoryController extends ABasicController{
 
     @DeleteMapping(value = "/delete/{id}")
     public ApiMessageDto<CategoryDto> delete(@PathVariable("id") Long id) {
-        if(!isAdmin()){
-            throw new RequestException(ErrorCode.CATEGORY_ERROR_NOT_FOUND, "Not allowed to delete.");
-        }
         ApiMessageDto<CategoryDto> result = new ApiMessageDto<>();
 
         Category category = categoryRepository.findById(id).orElse(null);
