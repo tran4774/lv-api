@@ -39,9 +39,6 @@ public class RankController extends ABasicController {
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<ResponseListObj<RankDto>> list(RankCriteria rankCriteria, Pageable pageable) {
-        if (!isAdmin()) {
-            throw new RequestException(ErrorCode.CATEGORY_ERROR_UNAUTHORIZED, "Not allowed get list.");
-        }
         Page<Rank> pageRanks = rankRepository.findAll(rankCriteria.getSpecification(), pageable);
         List<RankDto> listRankDto = rankMapper.fromListEntityToListRankDto(pageRanks.getContent());
         return new ApiMessageDto<>(new ResponseListObj<>(listRankDto, pageRanks), "Get list success");

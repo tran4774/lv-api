@@ -168,7 +168,8 @@ public class CustomerController extends ABasicController {
     public ApiMessageDto<CustomerAddressDto> getAddress(@PathVariable("id") Long id) {
         CustomerAddress customerAddress = customerAddressRepository.findById(id)
                 .orElseThrow(() -> new RequestException(ErrorCode.CUSTOMER_ADDRESS_ERROR_NOT_FOUND, "Customer's address not found"));
-        if (!customerAddress.getCustomer().getId().equals(getCurrentUserId()) && !isAdmin())
+        Customer customer = customerAddress.getCustomer();
+        if (Objects.equals(customer.getAccount().getKind(), Constants.USER_KIND_CUSTOMER) && customer.getId() != getCurrentUserId())
             throw new RequestException(ErrorCode.CUSTOMER_ADDRESS_ERROR_NOT_FOUND, "Customer's address not found");
         return new ApiMessageDto<>(customerMapper.fromCustomerAddressEntityToDto(customerAddress), "Get list successfully");
     }

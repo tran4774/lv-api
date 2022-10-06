@@ -75,11 +75,6 @@ public class NewsController extends ABasicController{
         if(news == null){
             throw new RequestException(ErrorCode.NEWS_ERROR_NOT_FOUND);
         }
-        if(!currentUser.getKind().equals(Constants.USER_KIND_ADMIN)
-                && !news.getStatus().equals(Constants.STATUS_ACTIVE)) {
-            throw new RequestException(ErrorCode.NEWS_ERROR_NOT_FOUND);
-        }
-
         result.setData(newsMapper.fromEntityToNewsDto(news));
         result.setMessage("Get news success");
         return result;
@@ -88,9 +83,7 @@ public class NewsController extends ABasicController{
     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> create(@Valid @RequestBody CreateNewsForm createNewsForm, BindingResult bindingResult) {
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
-
         News news = newsMapper.fromCreateNewsFormToEntity(createNewsForm);
-
         newsRepository.save(news);
         apiMessageDto.setMessage("Create news success");
         return apiMessageDto;
@@ -98,15 +91,12 @@ public class NewsController extends ABasicController{
 
     @PutMapping(value = "/update", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> update(@Valid @RequestBody UpdateNewsForm updateNewsForm, BindingResult bindingResult) {
-
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         News news = newsRepository.findById(updateNewsForm.getId()).orElse(null);
         if (news == null) {
             throw new RequestException(ErrorCode.NEWS_ERROR_NOT_FOUND);
         }
-
         newsMapper.fromUpdateNewsFormToEntity(updateNewsForm, news);
-
         if (StringUtils.isNoneBlank(updateNewsForm.getAvatar())) {
             if(!updateNewsForm.getAvatar().equals(news.getAvatar())){
                 //delete old image
@@ -114,21 +104,15 @@ public class NewsController extends ABasicController{
             }
             news.setAvatar(updateNewsForm.getAvatar());
         }
-
         newsRepository.save(news);
-
         apiMessageDto.setMessage("Update news success");
         return apiMessageDto;
-
     }
 
     @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> delete(@PathVariable("id") Long id){
         ApiMessageDto<String> result = new ApiMessageDto<>();
         News news = newsRepository.findById(id).orElse(null);
-        if(news == null){
-            throw new RequestException(ErrorCode.NEWS_ERROR_NOT_FOUND);
-        }
         commonApiService.deleteFile(news.getAvatar());
         newsRepository.delete(news);
         result.setMessage("Delete success");

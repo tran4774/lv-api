@@ -59,8 +59,11 @@ public class GroupController extends ABasicController{
     }
 
     @GetMapping(value = "/list_combobox", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiMessageDto<ResponseListObj<GroupAdminDto>> getListCombox(){
+    public ApiMessageDto<ResponseListObj<GroupAdminDto>> getListCombox(@RequestParam(name = "kind", required = false) Integer kind){
         GroupCriteria groupCriteria = new GroupCriteria();
+        if(kind != null) {
+            groupCriteria.setKind(kind);
+        }
         groupCriteria.setShow(true);
         ApiMessageDto<ResponseListObj<GroupAdminDto>> apiMessageDto = new ApiMessageDto<>();
         Page<Group> groupPage = groupRepository.findAll(groupCriteria.getSpecification(),Pageable.unpaged());
