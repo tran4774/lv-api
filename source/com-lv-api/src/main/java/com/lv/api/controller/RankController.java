@@ -62,9 +62,6 @@ public class RankController extends ABasicController {
 
     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> create(@Valid @RequestBody CreateRankForm createRankForm, BindingResult bindingResult) {
-        if (!isAdmin()) {
-            throw new RequestException(ErrorCode.CATEGORY_ERROR_UNAUTHORIZED, "Not allowed to create.");
-        }
         rankRepository.findByName(createRankForm.getName())
                 .ifPresent(r -> {
                     throw new RequestException(ErrorCode.RANK_ERROR_DUPLICATE_NAME, String.format("Rank %s was existed", r.getName()));
@@ -76,9 +73,6 @@ public class RankController extends ABasicController {
 
     @PutMapping(value = "/update", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> update(@Valid @RequestBody UpdateRankForm updateRankForm, BindingResult bindingResult) {
-        if (!isAdmin()) {
-            throw new RequestException(ErrorCode.CATEGORY_ERROR_UNAUTHORIZED, "Not allowed to update.");
-        }
         Rank rank = rankRepository.findById(updateRankForm.getId())
                 .orElseThrow(() -> new RequestException(ErrorCode.RANK_ERROR_NOT_FOUND, "Rank not found"));
         if(!Objects.equals(updateRankForm.getName(), rank.getName()))
@@ -96,9 +90,6 @@ public class RankController extends ABasicController {
 
     @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> delete(@PathVariable("id") Long id) {
-        if(!isAdmin()){
-            throw new RequestException(ErrorCode.CATEGORY_ERROR_NOT_FOUND, "Not allowed to delete.");
-        }
         Rank rank = rankRepository.findById(id)
                 .orElseThrow(() -> new RequestException(ErrorCode.RANK_ERROR_NOT_FOUND, "Rank not found"));
         commonApiService.deleteFile(rank.getAvatar());

@@ -53,9 +53,6 @@ public class EmployeeController extends ABasicController {
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<ResponseListObj<EmployeeAdminDto>> list(EmployeeCriteria employeeCriteria, Pageable pageable) {
-        if (!isAdmin()) {
-            throw new RequestException(ErrorCode.EMPLOYEE_ERROR_UNAUTHORIZED, "Not allowed to get list");
-        }
         Page<Employee> employeePage = employeeRepository.findAll(employeeCriteria.getSpecification(), pageable);
         List<EmployeeAdminDto> employeeAdminDtoList = employeeMapper.fromEmployeeEntityListToAdminDtoList(employeePage.getContent());
         return new ApiMessageDto<>(new ResponseListObj<>(employeeAdminDtoList, employeePage), "Get list successfully");
@@ -63,9 +60,6 @@ public class EmployeeController extends ABasicController {
 
     @GetMapping(value = "/auto-complete", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<List<EmployeeDto>> autoComplete(EmployeeCriteria employeeCriteria) {
-        if (!isAdmin()) {
-            throw new RequestException(ErrorCode.EMPLOYEE_ERROR_UNAUTHORIZED, "Not allowed to get list");
-        }
         Page<Employee> employeePage = employeeRepository.findAll(employeeCriteria.getSpecification(), Pageable.unpaged());
         return new ApiMessageDto<>(
                 employeeMapper.fromListEmployeeEntityToListDto(employeePage.getContent()),
@@ -75,9 +69,6 @@ public class EmployeeController extends ABasicController {
 
     @GetMapping(value = "/get/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<EmployeeAdminDto> get(@PathVariable("id") Long id) {
-        if (!isAdmin()) {
-            throw new RequestException(ErrorCode.EMPLOYEE_ERROR_UNAUTHORIZED, "Not allowed to get list");
-        }
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() -> new RequestException(ErrorCode.EMPLOYEE_ERROR_NOT_FOUND, "Employee not found"));
         return new ApiMessageDto<>(employeeMapper.fromEmployeeEntityToAdminDto(employee), "Get employee successfully");
@@ -85,9 +76,6 @@ public class EmployeeController extends ABasicController {
 
     @GetMapping(value = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<EmployeeDto> profile() {
-        if (!isEmployee()) {
-            throw new RequestException(ErrorCode.EMPLOYEE_ERROR_UNAUTHORIZED, "Not allowed to get profile");
-        }
         Employee employee = employeeRepository.findById(getCurrentUserId())
                 .orElseThrow(() -> new RequestException(ErrorCode.EMPLOYEE_ERROR_NOT_FOUND, "Employee not found"));
         return new ApiMessageDto<>(employeeMapper.fromEmployeeEntityToDto(employee), "Get employee successfully");
@@ -95,9 +83,6 @@ public class EmployeeController extends ABasicController {
 
     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> create(@Valid @RequestBody CreateEmployeeForm createEmployeeForm, BindingResult bindingResult) {
-        if (!isAdmin()) {
-            throw new RequestException(ErrorCode.EMPLOYEE_ERROR_UNAUTHORIZED, "Not allowed to create employee");
-        }
         if (accountRepository.countAccountByUsernameOrEmailOrPhone(
                 createEmployeeForm.getUsername(), createEmployeeForm.getEmail(), createEmployeeForm.getPhone()
         ) > 0)
@@ -119,9 +104,6 @@ public class EmployeeController extends ABasicController {
 
     @PutMapping(value = "/update", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> update(@Valid @RequestBody UpdateEmployeeForm updateEmployeeForm, BindingResult bindingResult) {
-        if (!isAdmin()) {
-            throw new RequestException(ErrorCode.EMPLOYEE_ERROR_UNAUTHORIZED, "Not allowed to create employee");
-        }
         if (accountRepository.countAccountByPhoneOrEmail(
                 updateEmployeeForm.getPhone(), updateEmployeeForm.getEmail()
         ) > 1)
@@ -173,9 +155,6 @@ public class EmployeeController extends ABasicController {
 
     @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> delete(@PathVariable("id") Long id) {
-        if (!isAdmin()) {
-            throw new RequestException(ErrorCode.EMPLOYEE_ERROR_UNAUTHORIZED, "Not allowed to create employee");
-        }
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() -> new RequestException(ErrorCode.EMPLOYEE_ERROR_NOT_FOUND, "Employee not found"));
         commonApiService.deleteFile(employee.getAccount().getAvatarPath());

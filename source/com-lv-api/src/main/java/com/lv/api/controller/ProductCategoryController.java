@@ -60,9 +60,6 @@ public class ProductCategoryController extends ABasicController {
 
     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> create(@Valid @RequestBody CreateProductCategoryForm createProductCategoryForm, BindingResult bindingResult) {
-        if (!isAdmin()) {
-            throw new RequestException(ErrorCode.PRODUCT_CATEGORY_ERROR_UNAUTHORIZED, "Not allowed to create");
-        }
         ProductCategory productCategory = productCategoryMapper.fromCreateProductCategoryFormToEntity(createProductCategoryForm);
         if (createProductCategoryForm.getParentId() != null) {
             ProductCategory parent = productCategoryRepository.findById(createProductCategoryForm.getParentId())
@@ -75,9 +72,6 @@ public class ProductCategoryController extends ABasicController {
 
     @PutMapping(value = "/update", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> update(@Valid @RequestBody UpdateProductCategoryForm updateProductCategoryForm, BindingResult bindingResult) {
-        if (!isAdmin()) {
-            throw new RequestException(ErrorCode.PRODUCT_CATEGORY_ERROR_UNAUTHORIZED, "Not allowed to create");
-        }
         ProductCategory productCategory = productCategoryRepository.findById(updateProductCategoryForm.getId())
                 .orElseThrow(() -> new RequestException(ErrorCode.PRODUCT_CATEGORY_ERROR_NOT_FOUND, "Parent not found"));
         if (updateProductCategoryForm.getParentId() != null) {
@@ -95,9 +89,6 @@ public class ProductCategoryController extends ABasicController {
 
     @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> delete(@PathVariable(name = "id") Long id) {
-        if (!isAdmin()) {
-            throw new RequestException(ErrorCode.PRODUCT_CATEGORY_ERROR_UNAUTHORIZED, "Not allowed to create");
-        }
         ProductCategory productCategory = productCategoryRepository.findById(id)
                 .orElseThrow(() -> new RequestException(ErrorCode.PRODUCT_CATEGORY_ERROR_NOT_FOUND, "Parent not found"));
         commonApiService.deleteFile(productCategory.getIcon());

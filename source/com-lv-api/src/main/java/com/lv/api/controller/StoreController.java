@@ -60,8 +60,6 @@ public class StoreController extends ABasicController {
 
     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> create(@Valid @RequestBody CreateStoreForm createStoreForm, BindingResult bindingResult) {
-        if (!isAdmin())
-            throw new RequestException(ErrorCode.STORE_ERROR_UNAUTHORIZED, "Not allowed to create");
         Location ward = locationRepository.findById(createStoreForm.getWardId())
                 .orElseThrow(() -> new RequestException(ErrorCode.LOCATION_ERROR_NOTFOUND, "Ward not found"));
         Location district = ward.getParent();
@@ -80,8 +78,6 @@ public class StoreController extends ABasicController {
 
     @PutMapping(value = "/update", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> update(@Valid @RequestBody UpdateStoreForm updateStoreForm, BindingResult bindingResult) {
-        if (!isAdmin())
-            throw new RequestException(ErrorCode.STORE_ERROR_UNAUTHORIZED, "Not allowed to create");
         Store store = storeRepository.findById(updateStoreForm.getId())
                 .orElseThrow(() -> new RequestException(ErrorCode.STORE_ERROR_NOT_FOUND, "Store not found"));
         Location ward = locationRepository.findById(updateStoreForm.getWardId())
@@ -102,8 +98,6 @@ public class StoreController extends ABasicController {
 
     @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> delete(@PathVariable(name = "id") Long id) {
-        if (!isAdmin())
-            throw new RequestException(ErrorCode.STORE_ERROR_UNAUTHORIZED, "Not allowed to create");
         Store store = storeRepository.findById(id)
                 .orElseThrow(() -> new RequestException(ErrorCode.STORE_ERROR_NOT_FOUND, "Store not found"));
         storeRepository.delete(store);
