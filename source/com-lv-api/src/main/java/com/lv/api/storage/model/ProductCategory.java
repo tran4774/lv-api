@@ -31,7 +31,7 @@ public class ProductCategory extends Auditable<String> {
     @Column(name = "order_sort")
     private Integer orderSort;
 
-    @Column(name = "icom")
+    @Column(name = "icon")
     private String icon;
 
     @Column(name = "note")
