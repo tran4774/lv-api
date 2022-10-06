@@ -66,16 +66,29 @@ public class ErrorCode {
     public static final String CUSTOMER_ERROR_UNAUTHORIZED = "ERROR_CUSTOMER-000";
 
     public static final String CUSTOMER_ERROR_NOT_FOUND = "ERROR-CUSTOMER-001";
-    public static final String CUSTOMER_ADDRESS_ERROR_NOT_FOUND = "ERROR_CUSTOMER-002";
-    public static final String CUSTOMER_ADDRESS_ERROR_UNAUTHORIZED = "ERROR_CUSTOMER-003";
-    public static final String CUSTOMER_ADDRESS_ERROR_CANNOT_DELETE = "ERROR_CUSTOMER-004";
+    public static final String CUSTOMER_ADDRESS_ERROR_NOT_FOUND = "ERROR-CUSTOMER-002";
+    public static final String CUSTOMER_ADDRESS_ERROR_UNAUTHORIZED = "ERROR-CUSTOMER-003";
+    public static final String CUSTOMER_ADDRESS_ERROR_CANNOT_DELETE = "ERROR-CUSTOMER-004";
 
     /**
      * Employee error code
      */
-    public static final String EMPLOYEE_ERROR_UNAUTHORIZED = "ERROR_EMPLOYEE-000";
+    public static final String EMPLOYEE_ERROR_UNAUTHORIZED = "ERROR-EMPLOYEE-000";
 
     public static final String EMPLOYEE_ERROR_NOT_FOUND = "ERROR-EMPLOYEE-001";
+
+    /**
+     * Product category error code
+     */
+    public static final String PRODUCT_CATEGORY_ERROR_UNAUTHORIZED = "PRODUCT-CATEGORY-ERROR-000";
+    public static final String PRODUCT_CATEGORY_ERROR_EXISTED = "PRODUCT-CATEGORY-ERROR-001";
+    public static final String PRODUCT_CATEGORY_ERROR_NOT_FOUND = "PRODUCT-CATEGORY-ERROR-002";
+
+    /**
+     * Store error code
+     */
+    public static final String STORE_ERROR_UNAUTHORIZED = "STORE-ERROR-000";
+    public static final String STORE_ERROR_NOT_FOUND = "STORE-ERROR-001";
 
     private ErrorCode() { throw new IllegalStateException("Utility class"); }
 }

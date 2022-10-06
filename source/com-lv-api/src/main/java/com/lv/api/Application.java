@@ -40,8 +40,7 @@ public class Application {
         SpringApplication.run(Application.class, args);
     }
 
-    private void createAdminUserIfNotExist(){
-        Account account = qrCodeStorageService.findAccountByUsername("admin");
+    private void createAdminUserIfNotExist(){Account account = qrCodeStorageService.findAccountByUsername("admin");
         if(account == null){
             List<Permission> defaultPermission = addPermission();
             Group group = initGroupDefault(defaultPermission);
@@ -140,6 +139,20 @@ public class Application {
         results.add(Permission.builder().action("/v1/employee/update").description("Update employee").name("Update employee").nameGroup("Employee").showMenu(false).build());
         results.add(Permission.builder().action("/v1/employee/update-profile").description("Update employee profile").name("Update employee profile").nameGroup("Employee").showMenu(false).build());
         results.add(Permission.builder().action("/v1/employee/delete").description("Delete employee").name("Delete employee").nameGroup("Employee").showMenu(false).build());
+        //STORE
+        results.add(Permission.builder().action("/v1/store/list").description("Get list store").name("Get list store").nameGroup("Store").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/store/auto-complete").description("Auto complete store").name("Auto complete rank").nameGroup("Store").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/store/get").description("Get store").name("Get store").nameGroup("Store").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/store/create").description("Create store").name("Create store").nameGroup("Store").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/store/update").description("Update store").name("Update store").nameGroup("Store").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/store/delete").description("Delete store").name("Delete store").nameGroup("Store").showMenu(false).build());
+        //PRODUCT CATEGORY
+        results.add(Permission.builder().action("/v1/product-category/list").description("Get list product category").name("Get list product category").nameGroup("Product category").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/product-category/auto-complete").description("Auto complete product category").name("Auto complete product category").nameGroup("Product category").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/product-category/get").description("Get product category").name("Get product category").nameGroup("Product category").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/product-category/create").description("Create product category").name("Create product category").nameGroup("Product category").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/product-category/update").description("Update product category").name("Update product category").nameGroup("Product category").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/product-category/delete").description("Delete product category").name("Delete product category").nameGroup("Product category").showMenu(false).build());
 
         return permissionRepository.saveAll(results);
     }
