@@ -40,7 +40,8 @@ public class Application {
         SpringApplication.run(Application.class, args);
     }
 
-    private void createAdminUserIfNotExist(){Account account = qrCodeStorageService.findAccountByUsername("admin");
+    private void createAdminUserIfNotExist(){
+        Account account = qrCodeStorageService.findAccountByUsername("admin");
         if(account == null){
             List<Permission> defaultPermission = addPermission();
             Group group = initGroupDefault(defaultPermission);
@@ -160,7 +161,13 @@ public class Application {
         results.add(Permission.builder().action("/v1/variant-template/create").description("Create variant template").name("Create variant template").nameGroup("Variant template").showMenu(false).build());
         results.add(Permission.builder().action("/v1/variant-template/update").description("Update variant template").name("Update variant template").nameGroup("Variant template").showMenu(false).build());
         results.add(Permission.builder().action("/v1/variant-template/delete").description("Delete variant template").name("Delete variant template").nameGroup("Variant template").showMenu(false).build());
-
+        //VARIANT
+        results.add(Permission.builder().action("/v1/variant/list").description("Get list variant").name("Get list variant").nameGroup("Variant").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/variant/auto-complete").description("Auto complete variant").name("Auto complete variant").nameGroup("Variant").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/variant/get").description("Get variant").name("Get variant").nameGroup("Variant").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/variant/create").description("Create variant").name("Create variant").nameGroup("Variant").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/variant/update").description("Update variant").name("Update variant").nameGroup("Variant").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/variant/delete").description("Delete variant").name("Delete variant").nameGroup("Variant").showMenu(false).build());
         return permissionRepository.saveAll(results);
     }
 
