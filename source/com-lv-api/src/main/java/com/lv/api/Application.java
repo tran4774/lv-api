@@ -153,6 +153,13 @@ public class Application {
         results.add(Permission.builder().action("/v1/product-category/create").description("Create product category").name("Create product category").nameGroup("Product category").showMenu(false).build());
         results.add(Permission.builder().action("/v1/product-category/update").description("Update product category").name("Update product category").nameGroup("Product category").showMenu(false).build());
         results.add(Permission.builder().action("/v1/product-category/delete").description("Delete product category").name("Delete product category").nameGroup("Product category").showMenu(false).build());
+        //VARIANT TEMPLATE
+        results.add(Permission.builder().action("/v1/variant-template/list").description("Get list variant template").name("Get list variant template").nameGroup("Variant template").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/variant-template/auto-complete").description("Auto complete variant template").name("Auto complete variant template").nameGroup("Variant template").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/variant-template/get").description("Get variant template").name("Get variant template").nameGroup("Variant template").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/variant-template/create").description("Create variant template").name("Create variant template").nameGroup("Variant template").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/variant-template/update").description("Update variant template").name("Update variant template").nameGroup("Variant template").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/variant-template/delete").description("Delete variant template").name("Delete variant template").nameGroup("Variant template").showMenu(false).build());
 
         return permissionRepository.saveAll(results);
     }
