@@ -11,7 +11,8 @@ import java.util.List;
 @Mapper(
         componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+        uses = {LocationMapper.class}
 )
 public interface StoreMapper {
 
@@ -29,9 +30,9 @@ public interface StoreMapper {
     @Mapping(source = "name", target = "name")
     @Mapping(source = "latitude", target = "latitude")
     @Mapping(source = "longitude", target = "longitude")
-    @Mapping(source = "province.id", target = "provinceId")
-    @Mapping(source = "district.id", target = "districtId")
-    @Mapping(source = "ward.id", target = "wardId")
+    @Mapping(source = "province", target = "province", qualifiedByName = "fromEntityToLocationDtoMapper")
+    @Mapping(source = "district", target = "district", qualifiedByName = "fromEntityToLocationDtoMapper")
+    @Mapping(source = "ward", target = "ward", qualifiedByName = "fromEntityToLocationDtoMapper")
     @Mapping(source = "addressDetails", target = "addressDetails")
     StoreDto fromStoreEntityToDto(Store store);
 
