@@ -90,5 +90,15 @@ public class ErrorCode {
     public static final String STORE_ERROR_UNAUTHORIZED = "STORE-ERROR-000";
     public static final String STORE_ERROR_NOT_FOUND = "STORE-ERROR-001";
 
+    /**
+     * Variant template error code
+     */
+    public static final String VARIANT_TEMPLATE_NOT_FOUND = "VARIANT-TEMPLATE-ERROR-000";
+
+    /**
+     * Variant error code
+     */
+    public static final String VARIANT_NOT_FOUND = "VARIANT-ERROR-000";
+
     private ErrorCode() { throw new IllegalStateException("Utility class"); }
 }

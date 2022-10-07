@@ -42,6 +42,9 @@ public class Constants {
     public static final String APP_WEB_CUSTOMER = "APP_WEB_CUSTOMER";
     public static final String APP_WEB_CMS = "APP_WEB_CMS";
 
+    public static final int VARIANT_KIND_SIZE = 1;
+    public static final int VARIANT_KIND_COLOR = 2;
+    public static final int VARIANT_KIND_OTHER = 10;
     private Constants(){
         throw new IllegalStateException("Utility class");
     }
