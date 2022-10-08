@@ -6,6 +6,7 @@ import com.lv.api.dto.ResponseListObj;
 import com.lv.api.dto.permission.PermissionAdminDto;
 import com.lv.api.exception.RequestException;
 import com.lv.api.form.permission.CreatePermissionForm;
+import com.lv.api.form.permission.UpdatePermissionForm;
 import com.lv.api.mapper.PermissionMapper;
 import com.lv.api.storage.criteria.PermissionCriteria;
 import com.lv.api.storage.model.Permission;
@@ -70,5 +71,28 @@ public class PermissionController extends ABasicController{
         permissionRepository.save(permission);
         apiMessageDto.setMessage("Create permission success");
         return apiMessageDto;
+    }
+
+    @PutMapping(value = "/update", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApiMessageDto<String> update(@Valid @RequestBody UpdatePermissionForm updatePermissionForm, BindingResult bindingResult) {
+        if(!isSuperAdmin()){
+            throw new RequestException(ErrorCode.PERMISSION_ERROR_UNAUTHORIZED);
+        }
+        Permission permission = permissionRepository.findById(updatePermissionForm.getId())
+                .orElseThrow(() -> new RequestException(ErrorCode.PERMISSION_ERROR_NOT_FOUND, "Permission not found"));
+        permissionMapper.fromUpdatePermissionFormToEntity(updatePermissionForm, permission);
+        permissionRepository.save(permission);
+        return new ApiMessageDto<>("Update permission successfully");
+    }
+
+    @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApiMessageDto<String> delete(@PathVariable(name = "id") Long id) {
+        if(!isSuperAdmin()){
+            throw new RequestException(ErrorCode.PERMISSION_ERROR_UNAUTHORIZED);
+        }
+        Permission permission = permissionRepository.findById(id)
+                .orElseThrow(() -> new RequestException(ErrorCode.PERMISSION_ERROR_NOT_FOUND, "Permission not found"));
+        permissionRepository.delete(permission);
+        return new ApiMessageDto<>("Delete permission successfully");
     }
 }

@@ -2,11 +2,9 @@ package com.lv.api.mapper;
 
 import com.lv.api.dto.permission.PermissionAdminDto;
 import com.lv.api.dto.permission.PermissionDto;
+import com.lv.api.form.permission.UpdatePermissionForm;
 import com.lv.api.storage.model.Permission;
-import org.mapstruct.IterableMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 
 import java.util.List;
 
@@ -31,9 +29,12 @@ public interface PermissionMapper {
     @IterableMapping(elementTargetType = PermissionAdminDto.class)
     List<PermissionAdminDto> fromEntityListToAdminDtoList(List<Permission> content);
 
-    @IterableMapping(elementTargetType = PermissionDto.class)
-    List<PermissionDto> fromEntityToDtoList(List<Permission> list);
-
-    @IterableMapping(elementTargetType = PermissionDto.class)
-    List<PermissionDto> fromEntityListToDtoList(List<Permission> content);
+    @Named("fromUpdatePermissionFormToEntityMapper")
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(source = "name", target = "name")
+    @Mapping(source = "action", target = "action")
+    @Mapping(source = "showMenu", target = "showMenu")
+    @Mapping(source = "description", target = "description")
+    @Mapping(source = "nameGroup", target = "nameGroup")
+    void fromUpdatePermissionFormToEntity(UpdatePermissionForm updatePermissionForm, @MappingTarget Permission permission);
 }
