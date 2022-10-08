@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 public class CreateStoreForm {
 
     @NotBlank(message = "Name can not be blank")
-    @ApiModelProperty(name = "name")
+    @ApiModelProperty(name = "name", required = true)
     private String name;
 
     @ApiModelProperty(name = "latitude")
@@ -22,18 +22,18 @@ public class CreateStoreForm {
     private Double longitude;
 
     @NotNull(message = "Province id can not be null")
-    @ApiModelProperty(name = "provinceId")
+    @ApiModelProperty(name = "provinceId", required = true)
     private Long provinceId;
 
     @NotNull(message = "District id can not be null")
-    @ApiModelProperty(name = "districtId")
+    @ApiModelProperty(name = "districtId", required = true)
     private Long districtId;
 
     @NotNull(message = "Ward id can not be null")
-    @ApiModelProperty(name = "wardId")
+    @ApiModelProperty(name = "wardId", required = true)
     private Long wardId;
 
     @NotBlank(message = "Address details can not be blank")
-    @ApiModelProperty(name = "addressDetails")
+    @ApiModelProperty(name = "addressDetails", required = true)
     private String addressDetails;
 }
