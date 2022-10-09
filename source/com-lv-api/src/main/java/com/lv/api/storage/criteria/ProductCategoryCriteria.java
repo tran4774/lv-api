@@ -17,6 +17,7 @@ public class ProductCategoryCriteria {
     private String name;
     private Integer order;
     private String note;
+    private Integer status;
 
     public Specification<ProductCategory> getSpecification() {
         return (root, criteriaQuery, cb) -> {
@@ -42,6 +43,10 @@ public class ProductCategoryCriteria {
 
             if (getNote() != null) {
                 predicates.add(cb.like(cb.lower(root.get("note")), getNote()));
+            }
+
+            if (getStatus() != null) {
+                predicates.add(cb.equal(root.get("status"), getStatus()));
             }
 
             return cb.and(predicates.toArray(new Predicate[predicates.size()]));

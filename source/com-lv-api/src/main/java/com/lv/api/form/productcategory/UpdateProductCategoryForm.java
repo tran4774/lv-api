@@ -34,7 +34,6 @@ public class UpdateProductCategoryForm {
     private String note;
 
     @Status
-    @NotNull(message = "status cannot be null")
     @ApiModelProperty(required = true)
     private Integer status;
 }

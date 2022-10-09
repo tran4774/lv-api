@@ -1,5 +1,6 @@
 package com.lv.api.form.productcategory;
 
+import com.lv.api.validation.Status;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,4 +29,6 @@ public class CreateProductCategoryForm {
     @ApiModelProperty(name = "note")
     private String note;
 
+    @Status
+    private Integer status = 1;
 }
