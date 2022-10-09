@@ -11,27 +11,21 @@ import java.util.List;
 @Mapper(
         componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
-        uses = {VariantTemplateMapper.class}
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
 )
 public interface VariantMapper {
 
     @Named("fromCreateVariantFormToEntityMapper")
     @BeanMapping(ignoreByDefault = true)
-    @Mapping(source = "kind", target = "kind")
     @Mapping(source = "name", target = "name")
-    @Mapping(source = "value", target = "value")
     @Mapping(source = "price", target = "price")
     Variant fromCreateVariantFormToEntity(CreateVariantForm createVariantForm);
 
     @Named("fromVariantEntityToDtoMapper")
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "id", target = "id")
-    @Mapping(source = "kind", target = "kind")
     @Mapping(source = "name", target = "name")
-    @Mapping(source = "value", target = "value")
     @Mapping(source = "price", target = "price")
-    @Mapping(source = "variantTemplate", target = "variantTemplate")
     VariantDto fromVariantEntityToDto(Variant variant);
 
     @Named("fromVariantEntityListToDtoListMapper")
@@ -40,9 +34,7 @@ public interface VariantMapper {
 
     @Named("fromUpdateVariantFormToEntityMapper")
     @BeanMapping(ignoreByDefault = true)
-    @Mapping(source = "kind", target = "kind")
     @Mapping(source = "name", target = "name")
-    @Mapping(source = "value", target = "value")
     @Mapping(source = "price", target = "price")
     void fromUpdateVariantFormToEntity(UpdateVariantForm updateVariantForm, @MappingTarget Variant variant);
 }

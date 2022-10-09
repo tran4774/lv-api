@@ -45,6 +45,9 @@ public class Constants {
     public static final int VARIANT_KIND_SIZE = 1;
     public static final int VARIANT_KIND_COLOR = 2;
     public static final int VARIANT_KIND_OTHER = 10;
+
+    public static final int VARIANT_TEMPLATE_SINGLE_CHOICE = 1;
+    public static final int VARIANT_TEMPLATE_MULTIPLE_CHOICE = 2;
     private Constants(){
         throw new IllegalStateException("Utility class");
     }

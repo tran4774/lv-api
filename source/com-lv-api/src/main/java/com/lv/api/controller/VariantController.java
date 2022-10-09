@@ -10,9 +10,7 @@ import com.lv.api.form.variant.UpdateVariantForm;
 import com.lv.api.mapper.VariantMapper;
 import com.lv.api.storage.criteria.VariantCriteria;
 import com.lv.api.storage.model.Variant;
-import com.lv.api.storage.model.VariantTemplate;
 import com.lv.api.storage.repository.VariantRepository;
-import com.lv.api.storage.repository.VariantTemplateRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -32,7 +30,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class VariantController extends ABasicController {
     private final VariantRepository variantRepository;
-    private final VariantTemplateRepository variantTemplateRepository;
     private final VariantMapper variantMapper;
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -60,10 +57,7 @@ public class VariantController extends ABasicController {
 
     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> create(@Valid @RequestBody CreateVariantForm createVariantForm, BindingResult bindingResult) {
-        VariantTemplate variantTemplate = variantTemplateRepository.findById(createVariantForm.getVariantTemplateId())
-                .orElseThrow(() -> new RequestException(ErrorCode.VARIANT_TEMPLATE_NOT_FOUND, "Variant template not found"));
         Variant variant = variantMapper.fromCreateVariantFormToEntity(createVariantForm);
-        variant.setVariantTemplate(variantTemplate);
         variantRepository.save(variant);
         return new ApiMessageDto<>("Create variant successfully");
     }
@@ -72,19 +66,16 @@ public class VariantController extends ABasicController {
     public ApiMessageDto<String> update(@Valid @RequestBody UpdateVariantForm updateVariantForm, BindingResult bindingResult) {
         Variant variant = variantRepository.findById(updateVariantForm.getId())
                 .orElseThrow(() -> new RequestException(ErrorCode.VARIANT_NOT_FOUND, "Variant not found"));
-        VariantTemplate variantTemplate = variantTemplateRepository.findById(updateVariantForm.getVariantTemplateId())
-                .orElseThrow(() -> new RequestException(ErrorCode.VARIANT_TEMPLATE_NOT_FOUND, "Variant template not found"));
         variantMapper.fromUpdateVariantFormToEntity(updateVariantForm, variant);
-        variant.setVariantTemplate(variantTemplate);
         variantRepository.save(variant);
         return new ApiMessageDto<>("Update variant successfully");
     }
 
-    @DeleteMapping(value = "/delete", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> delete(@PathVariable(name = "id") Long id) {
         Variant variant = variantRepository.findById(id)
                 .orElseThrow(() -> new RequestException(ErrorCode.VARIANT_NOT_FOUND, "Variant not found"));
         variantRepository.delete(variant);
-        return new ApiMessageDto<>("delete variant successfully");
+        return new ApiMessageDto<>("Delete variant successfully");
     }
 }
