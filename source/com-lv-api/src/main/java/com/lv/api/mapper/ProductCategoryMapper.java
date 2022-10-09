@@ -20,6 +20,7 @@ public interface ProductCategoryMapper {
     @Mapping(source = "orderSort", target = "orderSort")
     @Mapping(source = "icon", target = "icon")
     @Mapping(source = "note", target = "note")
+    @Mapping(source = "status", target = "status")
     ProductCategory fromCreateProductCategoryFormToEntity(CreateProductCategoryForm createProductCategoryForm);
 
     @Named("fromProductCategoryEntityToDtoMapper")

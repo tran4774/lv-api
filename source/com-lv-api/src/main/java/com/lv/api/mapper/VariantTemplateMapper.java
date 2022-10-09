@@ -21,6 +21,9 @@ public interface VariantTemplateMapper {
     VariantTemplate fromCreateVariantTemplateFormToEntity(CreateVariantTemplateForm createVariantTemplateForm);
 
     @Named("fromVariantTemplateEntityToDtoMapper")
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "name", target = "name")
     VariantTemplateDto fromVariantTemplateEntityToDto(VariantTemplate variantTemplate);
 
     @Named("fromVariantTemplateEntityListToDtoListMapper")

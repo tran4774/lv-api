@@ -14,19 +14,9 @@ public class Variant {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name = "kind")
-    private Integer kind;
-
     @Column(name = "name")
     private String name;
 
-    @Column(name = "value")
-    private String value;
-
     @Column(name = "price")
     private Double price;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "variant_template_id")
-    private VariantTemplate variantTemplate;
 }
