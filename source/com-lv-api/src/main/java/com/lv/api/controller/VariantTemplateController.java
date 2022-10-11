@@ -58,7 +58,6 @@ public class VariantTemplateController {
         return new ApiMessageDto<>(variantTemplateDtoList, "Get list successfully");
     }
 
-    @Transactional
     @GetMapping(value = "/get/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<VariantTemplateDto> get(@PathVariable(name = "id") Long id) {
         VariantTemplate variantTemplate = variantTemplateRepository.findById(id)
@@ -69,6 +68,7 @@ public class VariantTemplateController {
         return new ApiMessageDto<>(variantTemplateDto, "Get variant template successfully");
     }
 
+    @Transactional
     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> create(@Valid @RequestBody CreateVariantTemplateForm createVariantTemplateForm, BindingResult bindingResult) {
         final VariantTemplate variantTemplate = variantTemplateRepository.saveAndFlush(

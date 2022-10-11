@@ -1,33 +1,34 @@
-package com.lv.api.form.variantconfig;
+package com.lv.api.form.productconfig;
 
+import com.lv.api.form.productvariant.CreateProductVariantForm;
 import com.lv.api.validation.VariantChoiceKind;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
-public class CreateVariantConfigForm {
+public class CreateProductConfigForm {
 
     @VariantChoiceKind
     @ApiModelProperty(name = "choiceKind", required = true)
-    private Integer choiceKind;
+    private Long choiceKind;
 
-    @NotNull(message = "Required can not be null")
+    @NotNull
     @ApiModelProperty(name = "isRequired", required = true)
     private Boolean isRequired;
 
-    @NotBlank(message = "Name can not be blank")
-    @ApiModelProperty(name = "name")
+    @NotBlank
+    @ApiModelProperty(name = "name", required = true)
     private String name;
 
-    @Size(min = 1, message = "List variant id can not be empty")
-    @ApiModelProperty(name = "variantIds")
-    private List<Long> variantIds = new ArrayList<>();
+    @NotEmpty(message = "Product variant can not be empty")
+    @ApiModelProperty(name = "variants", required = true)
+    List<CreateProductVariantForm> variants = new ArrayList<>();
 }

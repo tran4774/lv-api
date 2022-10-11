@@ -1,6 +1,6 @@
 package com.lv.api.form.variantconfig;
 
-import com.lv.api.validation.VariantTemplateChoiceKind;
+import com.lv.api.validation.VariantChoiceKind;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +19,7 @@ public class UpdateVariantConfigForm {
     @ApiModelProperty(name = "id", required = true)
     private Long id;
 
-    @VariantTemplateChoiceKind
+    @VariantChoiceKind
     @ApiModelProperty(name = "choiceKind", required = true)
     private Integer choiceKind;
 
