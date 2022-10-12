@@ -95,7 +95,8 @@ public class ProductController extends ABasicController {
         Map<Long, String> imageMap = new HashMap<>();
         for (var productConfig : product.getProductConfigs()) {
             for (var productVariant : productConfig.getVariants()) {
-                imageMap.put(productVariant.getId(), productVariant.getImage());
+                if(productVariant.getImage() != null)
+                    imageMap.put(productVariant.getId(), productVariant.getImage());
             }
         }
         for (var productConfig : updateProductForm.getProductConfigs()) {
