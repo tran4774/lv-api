@@ -45,7 +45,7 @@ public class Product extends Auditable<String> {
     @JoinColumn(name = "parent_id")
     private Product parentProduct;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE, CascadeType.PERSIST}, orphanRemoval = true)
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true, targetEntity = ProductConfig.class)
     @JoinColumn(name = "product_id")
     List<ProductConfig> productConfigs = new ArrayList<>();
 }

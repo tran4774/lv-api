@@ -7,18 +7,20 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.jpa.domain.Specification;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
 public class ProductCriteria {
     private Long id;
     private Long categoryId;
-    private String tags;
+    private List<String> tags;
     private String description;
     private String name;
     private Double fromPrice;
@@ -27,7 +29,7 @@ public class ProductCriteria {
     private Long productParent;
     @ProductKind
     private Integer kind;
-    private String variantName;
+    private List<String> variantNames;
 
     public Specification<Product> getSpecification() {
         return (root, criteriaQuery, cb) -> {
@@ -42,7 +44,12 @@ public class ProductCriteria {
             }
 
             if (getTags() != null) {
-                ;
+                this.tags = getTags().stream().map(tag -> tag.toLowerCase().trim()).collect(Collectors.toList());
+                List<Predicate> predicatesOr = new ArrayList<>();
+                for(String tag: tags) {
+                    predicatesOr.add(cb.like(cb.lower(root.get("tags")), "%" + tag + "%"));
+                }
+                predicates.add(cb.or(predicatesOr.toArray(new Predicate[]{})));
             }
 
             if (getDescription() != null) {
@@ -73,10 +80,10 @@ public class ProductCriteria {
                 predicates.add(cb.equal(root.get("kind"), getKind()));
             }
 
-            if (getVariantName() != null) {
-//                Join<Product, ProductConfig> productConfigJoin = root.join("ProductConfig", JoinType.INNER);
-//                predicates.add(cb.like(cb.lower(productConfigJoin.join("ProductVariant").get("name")), "%" + getVariantName().toLowerCase() + ""));
-                ;
+            if (getVariantNames() != null) {
+                Join<Product, ProductConfig> productConfigJoin = root.join("productConfigs", JoinType.INNER);
+                this.variantNames = getVariantNames().stream().map(v -> v.toLowerCase().trim()).collect(Collectors.toList());
+                predicates.add(cb.lower(productConfigJoin.join("variants").get("name")).in(getVariantNames()));
             }
             return cb.and(predicates.toArray(new Predicate[predicates.size()]));
         };

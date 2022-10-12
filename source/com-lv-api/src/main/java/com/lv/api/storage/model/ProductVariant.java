@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Table(name = TablePrefix.PREFIX_TABLE + "product_variant")
-public class ProductVariant {
+public class ProductVariant extends Auditable<String> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -30,6 +30,6 @@ public class ProductVariant {
     private String orderSort;
 
     @ManyToOne(targetEntity = ProductConfig.class)
-    @JoinColumn(name = "product_config_id", insertable = false, updatable = false)
+    @JoinColumn(name = "product_config_id", insertable = false)
     private ProductConfig productConfig;
 }

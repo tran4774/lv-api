@@ -4,24 +4,18 @@ import com.lv.api.constant.Constants;
 import com.lv.api.dto.ApiMessageDto;
 import com.lv.api.dto.ErrorCode;
 import com.lv.api.dto.ResponseListObj;
+import com.lv.api.dto.product.ProductAdminDto;
 import com.lv.api.dto.product.ProductDto;
 import com.lv.api.exception.RequestException;
 import com.lv.api.form.product.CreateProductForm;
 import com.lv.api.form.product.UpdateProductForm;
-import com.lv.api.form.productvariant.UpdateProductVariantForm;
-import com.lv.api.mapper.ProductConfigMapper;
 import com.lv.api.mapper.ProductMapper;
-import com.lv.api.mapper.ProductVariantMapper;
 import com.lv.api.service.CommonApiService;
 import com.lv.api.storage.criteria.ProductCriteria;
 import com.lv.api.storage.model.Product;
 import com.lv.api.storage.model.ProductCategory;
-import com.lv.api.storage.model.ProductConfig;
-import com.lv.api.storage.model.ProductVariant;
 import com.lv.api.storage.repository.ProductCategoryRepository;
-import com.lv.api.storage.repository.ProductConfigRepository;
 import com.lv.api.storage.repository.ProductRepository;
-import com.lv.api.storage.repository.ProductVariantRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -32,7 +26,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/v1/product")
@@ -41,22 +37,17 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductController extends ABasicController {
     private final ProductRepository productRepository;
-    private final ProductConfigRepository productConfigRepository;
-    private final ProductVariantRepository productVariantRepository;
     private final ProductCategoryRepository productCategoryRepository;
     private final ProductMapper productMapper;
-    private final ProductConfigMapper productConfigMapper;
-    private final ProductVariantMapper productVariantMapper;
-
     private final CommonApiService commonApiService;
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiMessageDto<ResponseListObj<ProductDto>> list(@Valid ProductCriteria productCriteria, BindingResult bindingResult, Pageable pageable) {
+    public ApiMessageDto<ResponseListObj<ProductAdminDto>> list(@Valid ProductCriteria productCriteria, BindingResult bindingResult, Pageable pageable) {
         Page<Product> productPage = productRepository.findAll(productCriteria.getSpecification(), pageable);
-        List<ProductDto> productDtoList = productMapper.fromProductEntityListToDtoList(productPage.getContent());
+        List<ProductAdminDto> productAdminDtoList = productMapper.fromProductEntityListToAdminDtoList(productPage.getContent());
         return new ApiMessageDto<>(
                 new ResponseListObj<>(
-                        productDtoList,
+                        productAdminDtoList,
                         productPage
                 ),
                 "Get list product successfully"
@@ -66,16 +57,16 @@ public class ProductController extends ABasicController {
     @GetMapping(value = "/auto-complete", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<List<ProductDto>> autoComplete(@Valid ProductCriteria productCriteria) {
         Page<Product> productPage = productRepository.findAll(productCriteria.getSpecification(), Pageable.unpaged());
-        List<ProductDto> productDtoList = productMapper.fromProductEntityListToDtoList(productPage.getContent());
+        List<ProductDto> productDtoList = productMapper.fromProductEntityListToDtoListAutoComplete(productPage.getContent());
         return new ApiMessageDto<>(productDtoList, "Get list successfully");
     }
 
     @GetMapping(value = "/get/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiMessageDto<ProductDto> get(@PathVariable(name = "id") Long id) {
+    public ApiMessageDto<ProductAdminDto> get(@PathVariable(name = "id") Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RequestException(ErrorCode.PRODUCT_NOT_FOUND, "Product not found"));
-        ProductDto productDto = productMapper.fromProductEntityToDtoDetails(product);
-        return new ApiMessageDto<>(productDto, "Get product successfully");
+        ProductAdminDto productAdminDto = productMapper.fromProductEntityToAdminDto(product);
+        return new ApiMessageDto<>(productAdminDto, "Get product successfully");
     }
 
     @Transactional
@@ -101,31 +92,21 @@ public class ProductController extends ABasicController {
     public ApiMessageDto<String> update(@Valid @RequestBody UpdateProductForm updateProductForm, BindingResult bindingResult) {
         Product product = productRepository.findById(updateProductForm.getId())
                 .orElseThrow(() -> new RequestException(ErrorCode.PRODUCT_NOT_FOUND, "Product not found"));
-        List<ProductConfig> productConfigs = product.getProductConfigs();
-        updateProductForm.getProductConfigs().forEach(updateProductConfigForm -> {
-            ProductConfig productConfig = productConfigs.stream()
-                    .filter(productCfg -> productCfg.getId().equals(updateProductConfigForm.getId()))
-                    .findFirst()
-                    .orElseThrow(() -> new RequestException(ErrorCode.PRODUCT_CONFIG_NOT_FOUND, "Product config not found"));
-            List<ProductVariant> variants =  productConfig.getVariants();
-            updateProductConfigForm.getVariants().forEach(updateProductVariantForm -> {
-                ProductVariant productVariant = variants.stream()
-                        .filter(variant -> variant.getId().equals(updateProductVariantForm.getId()))
-                        .findFirst()
-                        .orElseThrow(() -> new RequestException(ErrorCode.PRODUCT_VARIANT_NOT_FOUND, "Product variant not found"));
-                productVariantMapper.fromUpdateProductVariantFormToEntity(updateProductVariantForm, productVariant);
-                productVariantRepository.save(productVariant);
-                variants.remove(productVariant);
-            });
-            productConfigMapper.frommUpdateProductConfigFormToEntity(updateProductConfigForm, productConfig);
-            productConfig.setVariants(variants);
-            productConfigRepository.save(productConfig);
-            productConfigs.remove(productConfig);
-            productVariantRepository.deleteAll(variants);
-        });
-        productMapper.fromUpdateProductFormToEntity(updateProductForm, product);
-        productConfigRepository.deleteAll(productConfigs);
-
+        Map<Long, String> imageMap = new HashMap<>();
+        for (var productConfig : product.getProductConfigs()) {
+            for (var productVariant : productConfig.getVariants()) {
+                imageMap.put(productVariant.getId(), productVariant.getImage());
+            }
+        }
+        for (var productConfig : updateProductForm.getProductConfigs()) {
+            for (var productVariant : productConfig.getVariants()) {
+                if (productVariant.getId() != null) {
+                    String image = imageMap.get(productVariant.getId());
+                    if (image != null && !image.equals(productVariant.getImage()))
+                        commonApiService.deleteFile(image);
+                }
+            }
+        }
         if (updateProductForm.getCategoryId() != null) {
             ProductCategory category = productCategoryRepository.findById(updateProductForm.getCategoryId())
                     .orElseThrow(() -> new RequestException(ErrorCode.PRODUCT_CATEGORY_ERROR_NOT_FOUND, "Product category not found"));
@@ -135,7 +116,7 @@ public class ProductController extends ABasicController {
         }
 
         if (!product.getKind().equals(updateProductForm.getKind())) {
-            if (updateProductForm.getKind().equals(Constants.PRODUCT_KIND_GROUP)) {
+            if (updateProductForm.getKind().equals(Constants.PRODUCT_KIND_GROUP) && updateProductForm.getProductParentId() != null) {
                 Product parentProduct = productRepository.findById(updateProductForm.getProductParentId())
                         .orElseThrow(() -> new RequestException(ErrorCode.PRODUCT_NOT_FOUND, "Parent product not found"));
                 product.setParentProduct(parentProduct);
@@ -143,6 +124,7 @@ public class ProductController extends ABasicController {
                 product.setParentProduct(null);
             }
         }
+        productMapper.fromUpdateProductFormToEntity(updateProductForm, product);
         productRepository.save(product);
         return new ApiMessageDto<>("Update product successfully");
     }

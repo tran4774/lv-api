@@ -1,5 +1,6 @@
 package com.lv.api.form.productvariant;
 
+import com.lv.api.validation.Status;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +19,7 @@ public class UpdateProductVariantForm {
     @ApiModelProperty(name = "name", required = true)
     private String name;
 
-    @NotBlank(message = "Price can not be null")
+    @NotNull(message = "Price can not be null")
     @ApiModelProperty(name = "price", required = true)
     private Double price;
 
@@ -31,4 +32,8 @@ public class UpdateProductVariantForm {
 
     @ApiModelProperty(name = "description")
     private String description;
+
+    @Status
+    @ApiModelProperty(name = "status")
+    private Integer status = 1;
 }

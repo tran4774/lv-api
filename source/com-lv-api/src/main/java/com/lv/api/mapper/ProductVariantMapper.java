@@ -1,5 +1,6 @@
 package com.lv.api.mapper;
 
+import com.lv.api.dto.productvariant.ProductVariantAdminDto;
 import com.lv.api.dto.productvariant.ProductVariantDto;
 import com.lv.api.form.productvariant.CreateProductVariantForm;
 import com.lv.api.form.productvariant.UpdateProductVariantForm;
@@ -22,6 +23,7 @@ public interface ProductVariantMapper {
     @Mapping(source = "image", target = "image")
     @Mapping(source = "orderSort", target = "orderSort")
     @Mapping(source = "description", target = "description")
+    @Mapping(source = "status", target = "status")
     ProductVariant fromCreateProductVariantFormToEntity(CreateProductVariantForm createProductVariantForm);
 
     @Named("fromCreateProductVariantFormListToEntityListMapper")
@@ -42,13 +44,34 @@ public interface ProductVariantMapper {
     @IterableMapping(elementTargetType = ProductVariantDto.class, qualifiedByName = "fromProductVariantEntityToDtoMapper")
     List<ProductVariantDto> fromProductVariantEntityListToDtoList(List<ProductVariant> variants);
 
-    @Named("fromUpdateProductVariantFormToEntityMapper")
-    @BeanMapping(ignoreByDefault = true)
+    @Named("fromProductVariantEntityToAdminDtoMapper")
+    @Mapping(source = "id", target = "id")
     @Mapping(source = "name", target = "name")
     @Mapping(source = "price", target = "price")
     @Mapping(source = "image", target = "image")
     @Mapping(source = "orderSort", target = "orderSort")
     @Mapping(source = "description", target = "description")
-    void fromUpdateProductVariantFormToEntity(UpdateProductVariantForm updateProductVariantForm, @MappingTarget ProductVariant productVariant);
+    ProductVariantAdminDto fromProductVariantEntityToAdminDto(ProductVariant productVariant);
+
+    @Named("fromProductVariantEntityListToAdminDtoListMapper")
+    @IterableMapping(elementTargetType = ProductVariantAdminDto.class, qualifiedByName = "fromProductVariantEntityToAdminDtoMapper")
+    List<ProductVariantAdminDto> fromProductVariantEntityListToAdminDtoList(List<ProductVariant> variants);
+
+    @Named("fromUpdateProductVariantFormToEntityMapper")
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "name", target = "name")
+    @Mapping(source = "price", target = "price")
+    @Mapping(source = "image", target = "image")
+    @Mapping(source = "orderSort", target = "orderSort")
+    @Mapping(source = "description", target = "description")
+    @Mapping(source = "status", target = "status")
+    ProductVariant fromUpdateProductVariantFormToEntity(UpdateProductVariantForm updateProductVariantForm);
+
+    @Named("fromUpdateProductVariantFormListToEntityListMapper")
+    @BeanMapping(ignoreByDefault = true)
+    @InheritConfiguration(name = "fromUpdateProductVariantFormToEntity")
+    @IterableMapping(elementTargetType = ProductVariant.class, qualifiedByName = "fromUpdateProductVariantFormToEntityMapper")
+    List<ProductVariant> fromUpdateProductVariantFormListToEntityList(List<UpdateProductVariantForm> updateProductVariantForm);
 
 }
