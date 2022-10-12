@@ -170,6 +170,13 @@ public class Application {
         results.add(Permission.builder().action("/v1/variant/create").description("Create variant").name("Create variant").nameGroup("Variant").showMenu(false).build());
         results.add(Permission.builder().action("/v1/variant/update").description("Update variant").name("Update variant").nameGroup("Variant").showMenu(false).build());
         results.add(Permission.builder().action("/v1/variant/delete").description("Delete variant").name("Delete variant").nameGroup("Variant").showMenu(false).build());
+        //PRODUCT
+        results.add(Permission.builder().action("/v1/product/list").description("Get list product").name("Get list product").nameGroup("Product").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/product/auto-complete").description("Auto complete product").name("Auto complete product").nameGroup("Product").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/product/get").description("Get product").name("Get product").nameGroup("Product").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/product/create").description("Create product").name("Create product").nameGroup("Product").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/product/update").description("Update product").name("Update product").nameGroup("Product").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/product/delete").description("Delete product").name("Delete product").nameGroup("Product").showMenu(false).build());
         return permissionRepository.saveAll(results);
     }
 

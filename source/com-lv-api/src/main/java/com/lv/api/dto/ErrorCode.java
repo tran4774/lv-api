@@ -105,5 +105,20 @@ public class ErrorCode {
      */
     public static final String VARIANT_CONFIG_NOT_FOUND = "VARIANT-CONFIG-ERROR-000";
 
+    /**
+     * Product error code
+     */
+    public static final String PRODUCT_NOT_FOUND = "PRODUCT-ERROR-000";
+
+    /**
+     * Product config error code
+     */
+    public static final String PRODUCT_CONFIG_NOT_FOUND = "PRODUCT-CONFIG-ERROR-000";
+
+    /**
+     * Product variant error code
+     */
+    public static final String PRODUCT_VARIANT_NOT_FOUND = "PRODUCT-VARIANT-ERROR-000";
+
     private ErrorCode() { throw new IllegalStateException("Utility class"); }
 }
