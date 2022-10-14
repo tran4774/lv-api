@@ -2,6 +2,7 @@ package com.lv.api.storage.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -26,10 +27,11 @@ public class ProductConfig extends Auditable<String> {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "product_id", insertable = false)
+    @JoinColumn(name = "product_id", insertable = false, updatable = false)
     private Product product;
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true, targetEntity = ProductVariant.class)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, targetEntity = ProductVariant.class)
     @JoinColumn(name = "product_config_id")
+    @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     List<ProductVariant> variants = new ArrayList<>();
 }

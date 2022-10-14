@@ -16,4 +16,7 @@ public class VariantDto {
 
     @ApiModelProperty(name = "price")
     private Double price;
+
+    @ApiModelProperty(name = "description")
+    private String description;
 }

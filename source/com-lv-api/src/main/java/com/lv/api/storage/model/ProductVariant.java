@@ -30,6 +30,6 @@ public class ProductVariant extends Auditable<String> {
     private String orderSort;
 
     @ManyToOne(targetEntity = ProductConfig.class)
-    @JoinColumn(name = "product_config_id", insertable = false)
+    @JoinColumn(name = "product_config_id", insertable = false, updatable = false)
     private ProductConfig productConfig;
 }

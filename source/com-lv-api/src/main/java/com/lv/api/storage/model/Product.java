@@ -2,6 +2,7 @@ package com.lv.api.storage.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -45,7 +46,8 @@ public class Product extends Auditable<String> {
     @JoinColumn(name = "parent_id")
     private Product parentProduct;
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true, targetEntity = ProductConfig.class)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, targetEntity = ProductConfig.class)
     @JoinColumn(name = "product_id")
+    @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     List<ProductConfig> productConfigs = new ArrayList<>();
 }

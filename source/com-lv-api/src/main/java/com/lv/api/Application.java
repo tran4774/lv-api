@@ -103,7 +103,7 @@ public class Application {
         results.add(Permission.builder().action("/v1/permission/create").description("Create permission").name("Create permission").nameGroup("Permission").showMenu(false).build());
         results.add(Permission.builder().action("/v1/permission/list").description("List permission").name("List permission").nameGroup("Permission").showMenu(false).build());
         results.add(Permission.builder().action("/v1/permission/update").description("Update permission").name("Update permission").nameGroup("Permission").showMenu(false).build());
-        results.add(Permission.builder().action("/v1/permission/delete").description("Delete permission").name("Update permission").nameGroup("Permission").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/permission/delete").description("Delete permission").name("Delete permission").nameGroup("Permission").showMenu(false).build());
         //LOCATION
         results.add(Permission.builder().action("/v1/locations/list").description("Chill list location").name("Chill list location").nameGroup("Locations").showMenu(false).build());
         results.add(Permission.builder().action("/v1/locations/get").description("Get location").name("Get location").nameGroup("Locations").showMenu(false).build());
