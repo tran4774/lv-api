@@ -18,4 +18,7 @@ public class CreateVariantForm {
     @NotNull(message = "Price can not be null")
     @ApiModelProperty(name = "price", required = true)
     private Double price;
+
+    @ApiModelProperty(name = "description")
+    private String description;
 }

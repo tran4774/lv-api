@@ -19,6 +19,7 @@ public interface VariantMapper {
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "name", target = "name")
     @Mapping(source = "price", target = "price")
+    @Mapping(source = "description", target = "description")
     Variant fromCreateVariantFormToEntity(CreateVariantForm createVariantForm);
 
     @Named("fromVariantEntityToDtoMapper")
@@ -26,6 +27,7 @@ public interface VariantMapper {
     @Mapping(source = "id", target = "id")
     @Mapping(source = "name", target = "name")
     @Mapping(source = "price", target = "price")
+    @Mapping(source = "description", target = "description")
     VariantDto fromVariantEntityToDto(Variant variant);
 
     @Named("fromVariantEntityListToDtoListMapper")
@@ -36,5 +38,6 @@ public interface VariantMapper {
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "name", target = "name")
     @Mapping(source = "price", target = "price")
+    @Mapping(source = "description", target = "description")
     void fromUpdateVariantFormToEntity(UpdateVariantForm updateVariantForm, @MappingTarget Variant variant);
 }
