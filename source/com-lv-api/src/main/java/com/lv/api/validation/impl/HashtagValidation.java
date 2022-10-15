@@ -4,6 +4,7 @@ import com.lv.api.validation.Hashtag;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.util.regex.Pattern;
 
 public class HashtagValidation implements ConstraintValidator<Hashtag, String> {
 
@@ -17,10 +18,10 @@ public class HashtagValidation implements ConstraintValidator<Hashtag, String> {
 
     @Override
     public boolean isValid(String hashtag, ConstraintValidatorContext constraintValidatorContext) {
-        if (hashtag == null && allowNull)
-            return true;
-        if(hashtag != null)
-            return hashtag.matches("^#[\\w_]+(?:\\s+#[\\w_]+)*$");
-        return false;
+        if(hashtag != null) {
+            Pattern pattern = Pattern.compile("^#[\\w_]+(?:\\s+#[\\w_]+)*$", Pattern.UNICODE_CHARACTER_CLASS);
+            return pattern.matcher(hashtag).find();
+        }
+        return allowNull;
     }
 }

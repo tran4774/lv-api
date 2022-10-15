@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.jpa.domain.Specification;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
@@ -26,7 +25,7 @@ public class ProductCriteria {
     private Double fromPrice;
     private Double toPrice;
     private Boolean isSoldOut;
-    private Long productParent;
+    private Long parentProduct;
     @ProductKind
     private Integer kind;
     private List<String> variantNames;
@@ -72,8 +71,8 @@ public class ProductCriteria {
                 predicates.add(cb.equal(root.get("isSoldOut"), getIsSoldOut()));
             }
 
-            if (getProductParent() != null) {
-                predicates.add(cb.equal(root.get("productParent"), getProductParent()));
+            if (getParentProduct() != null) {
+                predicates.add(cb.equal(root.get("parentProduct"), getParentProduct()));
             }
 
             if (getKind() != null) {
