@@ -120,5 +120,11 @@ public class ErrorCode {
      */
     public static final String PRODUCT_VARIANT_NOT_FOUND = "PRODUCT-VARIANT-ERROR-000";
 
+    /**
+     * Tag error code
+     */
+    public static final String TAG_EXISTED = "TAG-ERROR-000";
+    public static final String TAG_NOT_FOUND = "TAG-ERROR-001";
+
     private ErrorCode() { throw new IllegalStateException("Utility class"); }
 }
