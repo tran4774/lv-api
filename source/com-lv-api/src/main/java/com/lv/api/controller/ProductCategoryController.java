@@ -34,7 +34,7 @@ public class ProductCategoryController extends ABasicController {
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<List<ProductCategoryDto>> list(ProductCategoryCriteria productCategoryCriteria) {
-        List<ProductCategory> categoryList = productCategoryRepository.findAll(productCategoryCriteria.getSpecification());
+        List<ProductCategory> categoryList = productCategoryRepository.findAll(productCategoryCriteria.getSpecification(), Sort.by(Sort.Order.asc("orderSort")));
         return new ApiMessageDto<>(productCategoryMapper.fromProductCategoryListToDtoList(categoryList), "Get list successfully");
     }
 
