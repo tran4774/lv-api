@@ -78,9 +78,13 @@ public class ProductController extends ABasicController {
                     .orElseThrow(() -> new RequestException(ErrorCode.PRODUCT_CATEGORY_ERROR_NOT_FOUND, "Product category not found"));
             product.setCategory(category);
         }
-        if (createProductForm.getKind().equals(Constants.PRODUCT_KIND_GROUP) && createProductForm.getProductParentId() != null) {
+        if (createProductForm.getProductParentId() != null) {
             Product parentProduct = productRepository.findById(createProductForm.getProductParentId())
                     .orElseThrow(() -> new RequestException(ErrorCode.PRODUCT_NOT_FOUND, "Parent product not found"));
+            if (!parentProduct.getKind().equals(Constants.PRODUCT_KIND_GROUP)) {
+                parentProduct.setKind(Constants.PRODUCT_KIND_GROUP);
+                parentProduct = productRepository.saveAndFlush(parentProduct);
+            }
             product.setParentProduct(parentProduct);
         }
         productRepository.save(product);
@@ -95,7 +99,7 @@ public class ProductController extends ABasicController {
         Map<Long, String> imageMap = new HashMap<>();
         for (var productConfig : product.getProductConfigs()) {
             for (var productVariant : productConfig.getVariants()) {
-                if(productVariant.getImage() != null)
+                if (productVariant.getImage() != null)
                     imageMap.put(productVariant.getId(), productVariant.getImage());
             }
         }
@@ -116,14 +120,16 @@ public class ProductController extends ABasicController {
             product.setCategory(null);
         }
 
-        if (!product.getKind().equals(updateProductForm.getKind())) {
-            if (updateProductForm.getKind().equals(Constants.PRODUCT_KIND_GROUP) && updateProductForm.getProductParentId() != null) {
-                Product parentProduct = productRepository.findById(updateProductForm.getProductParentId())
-                        .orElseThrow(() -> new RequestException(ErrorCode.PRODUCT_NOT_FOUND, "Parent product not found"));
-                product.setParentProduct(parentProduct);
-            } else {
-                product.setParentProduct(null);
+        if (updateProductForm.getProductParentId() != null) {
+            Product parentProduct = productRepository.findById(updateProductForm.getProductParentId())
+                    .orElseThrow(() -> new RequestException(ErrorCode.PRODUCT_NOT_FOUND, "Parent product not found"));
+            if (!parentProduct.getKind().equals(Constants.PRODUCT_KIND_GROUP)) {
+                parentProduct.setKind(Constants.PRODUCT_KIND_GROUP);
+                parentProduct = productRepository.saveAndFlush(parentProduct);
             }
+            product.setParentProduct(parentProduct);
+        } else {
+            product.setParentProduct(null);
         }
         productMapper.fromUpdateProductFormToEntity(updateProductForm, product);
         productRepository.save(product);

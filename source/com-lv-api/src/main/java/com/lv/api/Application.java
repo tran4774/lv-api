@@ -177,6 +177,13 @@ public class Application {
         results.add(Permission.builder().action("/v1/product/create").description("Create product").name("Create product").nameGroup("Product").showMenu(false).build());
         results.add(Permission.builder().action("/v1/product/update").description("Update product").name("Update product").nameGroup("Product").showMenu(false).build());
         results.add(Permission.builder().action("/v1/product/delete").description("Delete product").name("Delete product").nameGroup("Product").showMenu(false).build());
+        //TAG
+        results.add(Permission.builder().action("/v1/tag/list").description("Get list tag").name("Get list tag").nameGroup("Tag").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/tag/auto-complete").description("Auto complete tag").name("Auto complete tag").nameGroup("Tag").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/tag/get").description("Get tag").name("Get tag").nameGroup("Tag").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/tag/create").description("Create tag").name("Create tag").nameGroup("Tag").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/tag/update").description("Update tag").name("Update tag").nameGroup("Tag").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/tag/delete").description("Delete tag").name("Delete tag").nameGroup("Tag").showMenu(false).build());
         return permissionRepository.saveAll(results);
     }
 

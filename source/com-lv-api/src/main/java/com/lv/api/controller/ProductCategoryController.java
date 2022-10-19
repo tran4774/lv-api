@@ -2,7 +2,6 @@ package com.lv.api.controller;
 
 import com.lv.api.dto.ApiMessageDto;
 import com.lv.api.dto.ErrorCode;
-import com.lv.api.dto.ResponseListObj;
 import com.lv.api.dto.productcategory.ProductCategoryDto;
 import com.lv.api.exception.RequestException;
 import com.lv.api.form.productcategory.CreateProductCategoryForm;
@@ -15,8 +14,6 @@ import com.lv.api.storage.repository.ProductCategoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.validation.BindingResult;
@@ -36,10 +33,9 @@ public class ProductCategoryController extends ABasicController {
     private final CommonApiService commonApiService;
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiMessageDto<ResponseListObj<ProductCategoryDto>> list(ProductCategoryCriteria productCategoryCriteria, Pageable pageable) {
-        Page<ProductCategory> categoryPage = productCategoryRepository.findAll(productCategoryCriteria.getSpecification(), pageable);
-        List<ProductCategoryDto> productCategoryDtoList = productCategoryMapper.fromProductCategoryListToDtoList(categoryPage.getContent());
-        return new ApiMessageDto<>(new ResponseListObj<>(productCategoryDtoList, categoryPage), "Get list successfully");
+    public ApiMessageDto<List<ProductCategoryDto>> list(ProductCategoryCriteria productCategoryCriteria) {
+        List<ProductCategory> categoryList = productCategoryRepository.findAll(productCategoryCriteria.getSpecification());
+        return new ApiMessageDto<>(productCategoryMapper.fromProductCategoryListToDtoList(categoryList), "Get list successfully");
     }
 
     @GetMapping(value = "/auto-complete", produces = MediaType.APPLICATION_JSON_VALUE)
