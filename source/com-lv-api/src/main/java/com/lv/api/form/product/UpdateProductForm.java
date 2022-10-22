@@ -50,10 +50,6 @@ public class UpdateProductForm {
     @ApiModelProperty(name = "productParentId")
     private Long productParentId;
 
-    @ProductKind
-    @ApiModelProperty(name = "kind", required = true, notes = "1: product thường, 2: product nhóm")
-    private Integer kind;
-
     @Status
     @ApiModelProperty(name = "status")
     private Integer status = 1;

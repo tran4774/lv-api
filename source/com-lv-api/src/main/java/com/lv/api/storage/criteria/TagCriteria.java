@@ -33,10 +33,6 @@ public class TagCriteria {
     }
 
     public Specification<Tag> getSpecificationAutoComplete() {
-        return (root, criteriaQuery, cb) -> {
-            if (!getTag().startsWith("#", 0))
-                setTag("#" + getTag());
-            return cb.like(cb.lower(root.get("tag")), getTag().toLowerCase() + "%");
-        };
+        return (root, criteriaQuery, cb) -> cb.like(cb.lower(root.get("tag")), getTag().toLowerCase() + "%");
     }
 }

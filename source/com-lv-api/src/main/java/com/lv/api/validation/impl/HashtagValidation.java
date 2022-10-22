@@ -1,6 +1,7 @@
 package com.lv.api.validation.impl;
 
 import com.lv.api.validation.Hashtag;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -18,8 +19,8 @@ public class HashtagValidation implements ConstraintValidator<Hashtag, String> {
 
     @Override
     public boolean isValid(String hashtag, ConstraintValidatorContext constraintValidatorContext) {
-        if(hashtag != null) {
-            Pattern pattern = Pattern.compile("^#[\\w_]+(?:\\s+#[\\w_]+)*$", Pattern.UNICODE_CHARACTER_CLASS);
+        if(StringUtils.isNoneBlank(hashtag)) {
+            Pattern pattern = Pattern.compile("^[\\w_]+(?:\\s+[\\w_]+)*$", Pattern.UNICODE_CHARACTER_CLASS);
             return pattern.matcher(hashtag).find();
         }
         return allowNull;

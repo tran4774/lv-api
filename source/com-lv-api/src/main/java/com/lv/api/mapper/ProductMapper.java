@@ -99,7 +99,6 @@ public interface ProductMapper {
     @Mapping(source = "price", target = "price")
     @Mapping(source = "image", target = "image")
     @Mapping(source = "isSoldOut", target = "isSoldOut")
-    @Mapping(source = "kind", target = "kind")
     @Mapping(source = "status", target = "status")
     @Mapping(source = "productConfigs", target = "productConfigs", qualifiedByName = "frommUpdateProductConfigFormListToEntityListMapper")
     void fromUpdateProductFormToEntity(UpdateProductForm updateProductForm, @MappingTarget Product product);
