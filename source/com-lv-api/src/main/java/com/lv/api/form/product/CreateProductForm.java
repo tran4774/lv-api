@@ -44,8 +44,8 @@ public class CreateProductForm {
     @ApiModelProperty(name = "isSoldOut")
     private Boolean isSoldOut = false;
 
-    @ApiModelProperty(name = "productParentId")
-    private Long productParentId;
+    @ApiModelProperty(name = "parentProductId")
+    private Long parentProductId;
 
     @ProductKind
     @ApiModelProperty(name = "kind", required = true, notes = "1: product thường, 2: product nhóm")
