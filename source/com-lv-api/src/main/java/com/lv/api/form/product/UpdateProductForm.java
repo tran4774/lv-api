@@ -2,7 +2,6 @@ package com.lv.api.form.product;
 
 import com.lv.api.form.productconfig.UpdateProductConfigForm;
 import com.lv.api.validation.Hashtag;
-import com.lv.api.validation.ProductKind;
 import com.lv.api.validation.Status;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -47,8 +46,8 @@ public class UpdateProductForm {
     @ApiModelProperty(name = "isSoldOut")
     private Boolean isSoldOut = false;
 
-    @ApiModelProperty(name = "productParentId")
-    private Long productParentId;
+    @ApiModelProperty(name = "parentProductId")
+    private Long parentProductId;
 
     @Status
     @ApiModelProperty(name = "status")
