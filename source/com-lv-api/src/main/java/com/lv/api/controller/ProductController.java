@@ -26,9 +26,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/v1/product")
@@ -143,5 +143,26 @@ public class ProductController extends ABasicController {
 
         productRepository.delete(product);
         return new ApiMessageDto<>("Delete product successfully");
+    }
+
+    @Transactional
+    @GetMapping(value = "/get-all", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApiMessageDto<Collection<ProductDto>> getAll(Boolean tree) {
+        List<Product> productList = productRepository.findAllByStatus(Constants.STATUS_ACTIVE);
+        Map<Long, ProductDto> productDtoMap = new ConcurrentHashMap();
+        productList.forEach(product -> productDtoMap.put(product.getId(), productMapper.fromProductEntityToDto(product)));
+        if(tree != null && tree.equals(true)) {
+            productList.forEach(product -> {
+                Product parent = product.getParentProduct();
+                if(parent != null && productDtoMap.containsKey(parent.getId())) {
+                    ProductDto productParentDto = productDtoMap.get(parent.getId());
+                    if(productParentDto.getChildProducts() == null)
+                        productParentDto.setChildProducts(new ArrayList<>());
+                    productParentDto.getChildProducts().add(productDtoMap.get(product.getId()));
+                    productDtoMap.remove(product.getId());
+                }
+            });
+        }
+        return new ApiMessageDto<>(productDtoMap.values(), "Get all successfully");
     }
 }

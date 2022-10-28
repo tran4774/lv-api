@@ -1,5 +1,6 @@
 package com.lv.api.controller;
 
+import com.lv.api.constant.Constants;
 import com.lv.api.dto.ApiMessageDto;
 import com.lv.api.dto.ErrorCode;
 import com.lv.api.dto.productcategory.ProductCategoryDto;
@@ -19,8 +20,10 @@ import org.springframework.http.MediaType;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
 @RequestMapping("/v1/product-category")
@@ -90,5 +93,25 @@ public class ProductCategoryController extends ABasicController {
         commonApiService.deleteFile(productCategory.getIcon());
         productCategoryRepository.delete(productCategory);
         return new ApiMessageDto<>("Delete product category successfully");
+    }
+
+    @Transactional
+    @GetMapping(value = "/get-all", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApiMessageDto<Collection<ProductCategoryDto>> getAll() {
+        List<ProductCategory> categoryList = productCategoryRepository.findAllByStatus(Constants.STATUS_ACTIVE);
+        Map<Long, ProductCategoryDto> categoryDtoMap = new ConcurrentHashMap<>();
+        categoryList.forEach(category -> categoryDtoMap.put(category.getId(), productCategoryMapper.fromProductCategoryEntityToDtoFE(category)));
+        categoryList.forEach(category -> {
+            ProductCategory parent = category.getParentCategory();
+            if (parent != null && categoryDtoMap.containsKey(parent.getId())) {
+                ProductCategoryDto productCategoryParentDto = categoryDtoMap.get(parent.getId());
+                if (productCategoryParentDto.getChildCategories() == null) {
+                    productCategoryParentDto.setChildCategories(new ArrayList<>());
+                }
+                productCategoryParentDto.getChildCategories().add(categoryDtoMap.get(category.getId()));
+                categoryDtoMap.remove(category.getId());
+            }
+        });
+        return new ApiMessageDto<>(categoryDtoMap.values(), "Get list successfully");
     }
 }

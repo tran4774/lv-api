@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 public class ProductCategoryDto {
@@ -27,4 +29,7 @@ public class ProductCategoryDto {
 
     @ApiModelProperty(name = "status")
     private Integer status;
+
+    @ApiModelProperty(name = "childCategories")
+    private List<ProductCategoryDto> childCategories;
 }
