@@ -46,8 +46,8 @@ public class Product extends Auditable<String> {
     @JoinColumn(name = "parent_id")
     private Product parentProduct;
 
-//    @OneToMany(mappedBy = "parentProduct")
-//    List<Product> chillProducts;
+    @OneToMany(mappedBy = "parentProduct")
+    List<Product> chillProducts;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, targetEntity = ProductConfig.class)
     @JoinColumn(name = "product_id")

@@ -51,14 +51,12 @@ public interface ProductMapper {
     @Named("fromProductEntityToDtoTreeMapper")
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "id", target = "id")
-    @Mapping(source = "category.id", target = "productCategoryId")
     @Mapping(source = "tags", target = "tags")
     @Mapping(source = "description", target = "description")
     @Mapping(source = "name", target = "name")
     @Mapping(source = "price", target = "price")
     @Mapping(source = "image", target = "image")
     @Mapping(source = "isSoldOut", target = "isSoldOut")
-    @Mapping(source = "chillProducts", target = "childProducts")
     @Mapping(source = "kind", target = "kind")
     ProductDto fromProductEntityToDtoTree(Product product);
 

@@ -9,6 +9,7 @@ import com.lv.api.dto.product.ProductDto;
 import com.lv.api.exception.RequestException;
 import com.lv.api.form.product.CreateProductForm;
 import com.lv.api.form.product.UpdateProductForm;
+import com.lv.api.mapper.ProductCategoryMapper;
 import com.lv.api.mapper.ProductMapper;
 import com.lv.api.service.CommonApiService;
 import com.lv.api.storage.criteria.ProductCriteria;
@@ -28,7 +29,6 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/v1/product")
@@ -39,6 +39,7 @@ public class ProductController extends ABasicController {
     private final ProductRepository productRepository;
     private final ProductCategoryRepository productCategoryRepository;
     private final ProductMapper productMapper;
+    private final ProductCategoryMapper productCategoryMapper;
     private final CommonApiService commonApiService;
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -146,23 +147,23 @@ public class ProductController extends ABasicController {
     }
 
     @Transactional
-    @GetMapping(value = "/get-all", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiMessageDto<Collection<ProductDto>> getAll(Boolean tree) {
-        List<Product> productList = productRepository.findAllByStatus(Constants.STATUS_ACTIVE);
+    @GetMapping(value = "/get-by-category", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApiMessageDto<Collection<ProductDto>> getAll(Long categoryId) {
+        ProductCategory category = productCategoryRepository.findByStatusAndId(Constants.STATUS_ACTIVE, categoryId)
+                .orElseThrow(() -> new RequestException(ErrorCode.PRODUCT_CATEGORY_ERROR_NOT_FOUND, "Category not found"));
+        List<Product> productList = category.getProducts();
         Map<Long, ProductDto> productDtoMap = new ConcurrentHashMap();
-        productList.forEach(product -> productDtoMap.put(product.getId(), productMapper.fromProductEntityToDto(product)));
-        if(tree != null && tree.equals(true)) {
-            productList.forEach(product -> {
-                Product parent = product.getParentProduct();
-                if(parent != null && productDtoMap.containsKey(parent.getId())) {
-                    ProductDto productParentDto = productDtoMap.get(parent.getId());
-                    if(productParentDto.getChildProducts() == null)
-                        productParentDto.setChildProducts(new ArrayList<>());
-                    productParentDto.getChildProducts().add(productDtoMap.get(product.getId()));
-                    productDtoMap.remove(product.getId());
-                }
-            });
-        }
+        productList.forEach(product -> productDtoMap.put(product.getId(), productMapper.fromProductEntityToDtoTree(product)));
+        productList.forEach(product -> {
+            Product parent = product.getParentProduct();
+            if(parent != null && productDtoMap.containsKey(parent.getId())) {
+                ProductDto productParentDto = productDtoMap.get(parent.getId());
+                if(productParentDto.getChildProducts() == null)
+                    productParentDto.setChildProducts(new ArrayList<>());
+                productParentDto.getChildProducts().add(productDtoMap.get(product.getId()));
+                productDtoMap.remove(product.getId());
+            }
+        });
         return new ApiMessageDto<>(productDtoMap.values(), "Get all successfully");
     }
 }

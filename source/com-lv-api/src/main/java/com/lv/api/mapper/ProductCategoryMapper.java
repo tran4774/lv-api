@@ -11,7 +11,8 @@ import java.util.List;
 @Mapper(
         componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+        uses = {ProductMapper.class}
 )
 public interface ProductCategoryMapper {
     @Named("fromCreateProductCategoryFormToEntityMapper")
