@@ -48,6 +48,22 @@ public interface ProductMapper {
     @IterableMapping(elementTargetType = ProductDto.class, qualifiedByName = "fromProductEntityToDtoMapper")
     List<ProductDto> fromProductEntityListToDtoList(List<Product> products);
 
+    @Named("fromProductEntityToDtoTreeMapper")
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "tags", target = "tags")
+    @Mapping(source = "description", target = "description")
+    @Mapping(source = "name", target = "name")
+    @Mapping(source = "price", target = "price")
+    @Mapping(source = "image", target = "image")
+    @Mapping(source = "isSoldOut", target = "isSoldOut")
+    @Mapping(source = "kind", target = "kind")
+    ProductDto fromProductEntityToDtoTree(Product product);
+
+    @Named("fromProductEntityListToDtoListTreeMapper")
+    @IterableMapping(elementTargetType = ProductDto.class, qualifiedByName = "fromProductEntityToDtoTreeMapper")
+    List<ProductDto> fromProductEntityListToDtoListTree(List<Product> products);
+
     @Named("fromProductEntityToDtoAutoCompleteMapper")
     @BeanMapping(ignoreByDefault = true)
     @Mapping(source = "id", target = "id")

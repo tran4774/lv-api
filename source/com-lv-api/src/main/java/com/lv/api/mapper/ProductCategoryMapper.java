@@ -11,7 +11,8 @@ import java.util.List;
 @Mapper(
         componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+        uses = {ProductMapper.class}
 )
 public interface ProductCategoryMapper {
     @Named("fromCreateProductCategoryFormToEntityMapper")
@@ -37,6 +38,19 @@ public interface ProductCategoryMapper {
     @Named("fromProductCategoryListToDtoListMapper")
     @IterableMapping(elementTargetType = ProductCategoryDto.class, qualifiedByName = "fromProductCategoryEntityToDtoMapper")
     List<ProductCategoryDto> fromProductCategoryListToDtoList(List<ProductCategory> productCategories);
+
+    @Named("fromProductCategoryEntityToDtoFEMapper")
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "parentCategory.id", target = "parentId")
+    @Mapping(source = "name", target = "name")
+    @Mapping(source = "orderSort", target = "orderSort")
+    @Mapping(source = "icon", target = "icon")
+    ProductCategoryDto fromProductCategoryEntityToDtoFE(ProductCategory productCategory);
+
+    @Named("fromProductCategoryListToDtoListFEMapper")
+    @IterableMapping(elementTargetType = ProductCategoryDto.class, qualifiedByName = "fromProductCategoryEntityToDtoFEMapper")
+    List<ProductCategoryDto> fromProductCategoryListToDtoListFE(List<ProductCategory> productCategories);
 
     @Named("fromUpdateProductCategoryFormToEntityMapper")
     @BeanMapping(ignoreByDefault = true)

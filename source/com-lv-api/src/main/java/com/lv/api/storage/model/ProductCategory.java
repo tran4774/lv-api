@@ -39,4 +39,7 @@ public class ProductCategory extends Auditable<String> {
 
     @OneToMany(mappedBy = "parentCategory", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<ProductCategory> productCategoryList;
+
+    @OneToMany(mappedBy = "category")
+    private List<Product> products;
 }
