@@ -25,6 +25,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/v1/news")
@@ -60,6 +61,19 @@ public class NewsController extends ABasicController{
         return responseListObjApiMessageDto;
     }
 
+    @GetMapping(value = "/list-news", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApiMessageDto<ResponseListObj<NewsDto>> listNewGuest(NewsCriteria newsCriteria, Pageable pageable) {
+        Page<News> newsPage = newsRepository.findAll(newsCriteria.getSpecificationGuest(), pageable);
+        List<NewsDto> newsDtos = newsMapper.fromEntityListToNewsDtoListGuest(newsPage.getContent());
+        return new ApiMessageDto<>(
+                new ResponseListObj<>(
+                        newsDtos,
+                        newsPage
+                ),
+                "Get list new successfully"
+        );
+    }
+
     @GetMapping(value = "/get/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<NewsDto> get(@PathVariable("id") Long id){
         Account currentUser = accountRepository.findById(getCurrentUserId()) .orElse(null);
@@ -78,6 +92,13 @@ public class NewsController extends ABasicController{
         result.setData(newsMapper.fromEntityToNewsDto(news));
         result.setMessage("Get news success");
         return result;
+    }
+
+    @GetMapping(value = "/get-news/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApiMessageDto<NewsDto> getNewsGuest(@PathVariable(value = "id") Long id) {
+        News news = newsRepository.findByIdAndStatus(id, Constants.STATUS_ACTIVE)
+                .orElseThrow(() -> new RequestException(ErrorCode.NEWS_ERROR_NOT_FOUND, "News not found"));
+        return new ApiMessageDto<>(newsMapper.fromEntityToNewsDtoGuestContent(news), "Get news successfully");
     }
 
     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)

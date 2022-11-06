@@ -75,4 +75,37 @@ public interface NewsMapper {
     @BeanMapping(ignoreByDefault = true)
     @Named("adminGetMapping")
     NewsDto fromEntityToNewsDto(News news);
+
+    @Named("fromEntityToNewsDtoGuestMapper")
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "category.id", target = "categoryId")
+    @Mapping(source = "avatar", target = "avatar")
+    @Mapping(source = "title", target = "title")
+    @Mapping(source = "banner", target = "banner")
+    @Mapping(source = "description", target = "description")
+    @Mapping(source = "pinTop", target = "pinTop")
+    @Mapping(source = "kind", target = "kind")
+    @Mapping(source = "createdDate", target = "createdDate")
+    @Mapping(source = "createdBy", target = "createdBy")
+    NewsDto fromEntityToNewsDtoGuest(News news);
+
+    @Named("fromEntityListToNewsDtoListGuestMapper")
+    @IterableMapping(elementTargetType = NewsDto.class, qualifiedByName = "fromEntityToNewsDtoGuestMapper")
+    List<NewsDto> fromEntityListToNewsDtoListGuest(List<News> news);
+
+    @Named("fromEntityToNewsDtoGuestContentMapper")
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "category.id", target = "categoryId")
+    @Mapping(source = "avatar", target = "avatar")
+    @Mapping(source = "title", target = "title")
+    @Mapping(source = "content", target = "content")
+    @Mapping(source = "banner", target = "banner")
+    @Mapping(source = "description", target = "description")
+    @Mapping(source = "pinTop", target = "pinTop")
+    @Mapping(source = "kind", target = "kind")
+    @Mapping(source = "createdDate", target = "createdDate")
+    @Mapping(source = "createdBy", target = "createdBy")
+    @BeanMapping(ignoreByDefault = true)
+    NewsDto fromEntityToNewsDtoGuestContent(News news);
 }

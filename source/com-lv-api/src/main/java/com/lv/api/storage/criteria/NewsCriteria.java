@@ -1,5 +1,6 @@
 package com.lv.api.storage.criteria;
 
+import com.lv.api.constant.Constants;
 import com.lv.api.storage.model.Category;
 import com.lv.api.storage.model.News;
 import lombok.Data;
@@ -53,6 +54,29 @@ public class NewsCriteria {
 
                 return cb.and(predicates.toArray(new Predicate[predicates.size()]));
             }
+        };
+    }
+
+    public Specification<News> getSpecificationGuest() {
+        return (root, criteriaQuery, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            if(getCategoryId() != null) {
+                Join<News, Category> joinCategory = root.join("category", JoinType.INNER);
+                predicates.add(cb.equal(joinCategory.get("id"), getCategoryId()));
+            }
+
+            if(getTitle() != null) {
+                predicates.add(cb.like(root.get("title"), "%" + getTitle().toLowerCase() + "%"  ));
+            }
+
+            if(getKind() != null) {
+                predicates.add(cb.equal(root.get("kind"), getKind()));
+            }
+
+            predicates.add(cb.equal(root.get("status"), Constants.STATUS_ACTIVE));
+
+            return cb.and(predicates.toArray(Predicate[]::new));
         };
     }
 }
