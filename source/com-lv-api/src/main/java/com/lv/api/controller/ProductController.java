@@ -9,7 +9,6 @@ import com.lv.api.dto.product.ProductDto;
 import com.lv.api.exception.RequestException;
 import com.lv.api.form.product.CreateProductForm;
 import com.lv.api.form.product.UpdateProductForm;
-import com.lv.api.mapper.ProductCategoryMapper;
 import com.lv.api.mapper.ProductMapper;
 import com.lv.api.service.CommonApiService;
 import com.lv.api.storage.criteria.ProductCriteria;
@@ -39,7 +38,6 @@ public class ProductController extends ABasicController {
     private final ProductRepository productRepository;
     private final ProductCategoryRepository productCategoryRepository;
     private final ProductMapper productMapper;
-    private final ProductCategoryMapper productCategoryMapper;
     private final CommonApiService commonApiService;
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -156,14 +154,24 @@ public class ProductController extends ABasicController {
         productList.forEach(product -> productDtoMap.put(product.getId(), productMapper.fromProductEntityToDtoTree(product)));
         productList.forEach(product -> {
             Product parent = product.getParentProduct();
-            if(parent != null && productDtoMap.containsKey(parent.getId())) {
+            if (parent != null && productDtoMap.containsKey(parent.getId())) {
                 ProductDto productParentDto = productDtoMap.get(parent.getId());
-                if(productParentDto.getChildProducts() == null)
+                if (productParentDto.getChildProducts() == null)
                     productParentDto.setChildProducts(new ArrayList<>());
                 productParentDto.getChildProducts().add(productDtoMap.get(product.getId()));
                 productDtoMap.remove(product.getId());
             }
         });
         return new ApiMessageDto<>(productDtoMap.values(), "Get all successfully");
+    }
+
+    @GetMapping(value = "/get-details/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApiMessageDto<ProductDto> getDetails(@PathVariable(name = "id") Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RequestException(ErrorCode.PRODUCT_NOT_FOUND, "Product not found"));
+        if (!product.getStatus().equals(Constants.STATUS_ACTIVE)) {
+            new RequestException(ErrorCode.PRODUCT_NOT_FOUND, "Product not found");
+        }
+        return new ApiMessageDto<>(productMapper.fromProductEntityToDtoDetails(product), "Get product successfully");
     }
 }

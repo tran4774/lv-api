@@ -46,6 +46,7 @@ public interface ProductCategoryMapper {
     @Mapping(source = "name", target = "name")
     @Mapping(source = "orderSort", target = "orderSort")
     @Mapping(source = "icon", target = "icon")
+    @Mapping(source = "note", target = "note")
     ProductCategoryDto fromProductCategoryEntityToDtoFE(ProductCategory productCategory);
 
     @Named("fromProductCategoryListToDtoListFEMapper")
