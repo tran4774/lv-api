@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -24,5 +25,5 @@ public class ProductConfigDto {
     private String name;
 
     @ApiModelProperty(name = "variants")
-    private List<ProductVariantDto> variants;
+    private List<ProductVariantDto> variants = new ArrayList<>();
 }
