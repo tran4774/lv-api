@@ -26,4 +26,7 @@ public class ProductVariantDto {
     @ApiModelProperty(name = "orderSort")
     private String orderSort;
 
+    @ApiModelProperty(name = "isSoldOut")
+    private Boolean isSoldOut;
+
 }
