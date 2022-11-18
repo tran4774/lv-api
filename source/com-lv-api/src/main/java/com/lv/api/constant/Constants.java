@@ -52,6 +52,18 @@ public class Constants {
     public static final int PRODUCT_KIND_SINGLE = 1;
     public static final int PRODUCT_KIND_GROUP = 2;
 
+    public static final int PAYMENT_METHOD_CARD = 1;
+    public static final int PAYMENT_METHOD_PAYPAL = 2;
+    public static final int PAYMENT_METHOD_COD = 3;
+
+    public static final int ORDER_STATUS_NEW= 1;
+    public static final int ORDER_STATUS_CHECKOUT = 2;
+    public static final int ORDER_STATUS_PAID = 3;
+    public static final int ORDER_STATUS_FAILED = 4;
+    public static final int ORDER_STATUS_DELIVERED = 5;
+    public static final int ORDER_STATUS_RETURNED = 6;
+    public static final int ORDER_STATUS_COMPLETED= 7;
+
     private Constants(){
         throw new IllegalStateException("Utility class");
     }

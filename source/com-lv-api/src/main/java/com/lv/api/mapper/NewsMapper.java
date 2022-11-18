@@ -22,6 +22,7 @@ public interface NewsMapper {
     @Mapping(source = "kind", target = "kind")
     @Mapping(source = "content", target = "content")
     @Mapping(source = "status", target = "status")
+    @Mapping(source = "tags", target = "tags")
     @BeanMapping(ignoreByDefault = true)
     @Named("adminCreateMapping")
     News fromCreateNewsFormToEntity(CreateNewsForm createNewsForm);
@@ -34,6 +35,7 @@ public interface NewsMapper {
     @Mapping(source = "description", target = "description")
     @Mapping(source = "pinTop", target = "pinTop")
     @Mapping(source = "status", target = "status")
+    @Mapping(source = "tags", target = "tags")
     @BeanMapping(ignoreByDefault = true)
     @Named("adminUpdateMapping")
     void fromUpdateNewsFormToEntity(UpdateNewsForm updateNewsForm, @MappingTarget News news);
@@ -51,6 +53,7 @@ public interface NewsMapper {
     @Mapping(source = "createdDate", target = "createdDate")
     @Mapping(source = "modifiedBy", target = "modifiedBy")
     @Mapping(source = "createdBy", target = "createdBy")
+    @Mapping(source = "tags", target = "tags")
     @BeanMapping(ignoreByDefault = true)
     @Named("adminGetMappingNoNewsContent")
     NewsDto fromEntityToNewsDtoNoNewsContent(News news);
@@ -72,6 +75,7 @@ public interface NewsMapper {
     @Mapping(source = "createdDate", target = "createdDate")
     @Mapping(source = "modifiedBy", target = "modifiedBy")
     @Mapping(source = "createdBy", target = "createdBy")
+    @Mapping(source = "tags", target = "tags")
     @BeanMapping(ignoreByDefault = true)
     @Named("adminGetMapping")
     NewsDto fromEntityToNewsDto(News news);
@@ -88,6 +92,7 @@ public interface NewsMapper {
     @Mapping(source = "kind", target = "kind")
     @Mapping(source = "createdDate", target = "createdDate")
     @Mapping(source = "createdBy", target = "createdBy")
+    @Mapping(source = "tags", target = "tags")
     NewsDto fromEntityToNewsDtoGuest(News news);
 
     @Named("fromEntityListToNewsDtoListGuestMapper")
@@ -106,6 +111,7 @@ public interface NewsMapper {
     @Mapping(source = "kind", target = "kind")
     @Mapping(source = "createdDate", target = "createdDate")
     @Mapping(source = "createdBy", target = "createdBy")
+    @Mapping(source = "tags", target = "tags")
     @BeanMapping(ignoreByDefault = true)
     NewsDto fromEntityToNewsDtoGuestContent(News news);
 }

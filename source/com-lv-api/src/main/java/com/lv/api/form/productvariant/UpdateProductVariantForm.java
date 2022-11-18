@@ -33,6 +33,9 @@ public class UpdateProductVariantForm {
     @ApiModelProperty(name = "description")
     private String description;
 
+    @ApiModelProperty(name = "isSoldOut")
+    private Boolean isSoldOut = false;
+
     @Status
     @ApiModelProperty(name = "status")
     private Integer status = 1;

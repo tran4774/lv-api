@@ -9,6 +9,7 @@ import org.springframework.data.jpa.domain.Specification;
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 public class NewsCriteria {
@@ -18,6 +19,7 @@ public class NewsCriteria {
     private Integer status;
     private String title;
     private Integer pinTop;
+    private List<String> tags;
 
     public Specification<News> getSpecification() {
         return new Specification<>() {
@@ -52,6 +54,15 @@ public class NewsCriteria {
                     predicates.add(cb.like(root.get("title"), "%" + getTitle().toLowerCase() + "%"  ));
                 }
 
+                if (getTags() != null) {
+                    setTags(getTags().stream().map(tag -> tag.toLowerCase().trim()).collect(Collectors.toList()));
+                    List<Predicate> predicatesOr = new ArrayList<>();
+                    for (String tag : tags) {
+                        predicatesOr.add(cb.like(cb.lower(root.get("tags")), "%" + tag + "%"));
+                    }
+                    predicates.add(cb.or(predicatesOr.toArray(new Predicate[]{})));
+                }
+
                 return cb.and(predicates.toArray(new Predicate[predicates.size()]));
             }
         };
@@ -72,6 +83,15 @@ public class NewsCriteria {
 
             if(getKind() != null) {
                 predicates.add(cb.equal(root.get("kind"), getKind()));
+            }
+
+            if (getTags() != null) {
+                setTags(getTags().stream().map(tag -> tag.toLowerCase().trim()).collect(Collectors.toList()));
+                List<Predicate> predicatesOr = new ArrayList<>();
+                for (String tag : tags) {
+                    predicatesOr.add(cb.like(cb.lower(root.get("tags")), "%" + tag + "%"));
+                }
+                predicates.add(cb.or(predicatesOr.toArray(new Predicate[]{})));
             }
 
             predicates.add(cb.equal(root.get("status"), Constants.STATUS_ACTIVE));

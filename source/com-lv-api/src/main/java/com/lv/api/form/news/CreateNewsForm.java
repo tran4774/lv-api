@@ -1,6 +1,7 @@
 package com.lv.api.form.news;
 
 import com.lv.api.validation.CategoryKind;
+import com.lv.api.validation.Hashtag;
 import com.lv.api.validation.Status;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -43,4 +44,8 @@ public class CreateNewsForm {
     @ApiModelProperty(required = true)
     @Status
     private Integer status;
+
+    @Hashtag
+    @ApiModelProperty(name = "tags", required = false)
+    private String tags;
 }

@@ -24,4 +24,7 @@ public class ProductVariantAdminDto extends ABasicAdminDto {
     @ApiModelProperty(name = "orderSort")
     private String orderSort;
 
+    @ApiModelProperty(name = "isSoldOut")
+    private Boolean isSoldOut = false;
+
 }

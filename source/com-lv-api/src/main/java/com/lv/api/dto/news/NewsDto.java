@@ -14,4 +14,5 @@ public class NewsDto extends ABasicAdminDto {
     private Long categoryId;
     private Integer pinTop;
     private Integer kind;
+    private String tags;
 }

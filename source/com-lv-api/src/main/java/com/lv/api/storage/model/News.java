@@ -25,4 +25,7 @@ public class News extends Auditable<String>{
     private Integer pinTop = 0; // 0 unpin, 1 pin
 
     private Integer kind; // 0 internal, ctv
+
+    @Column(name = "tags")
+    private String tags;
 }
