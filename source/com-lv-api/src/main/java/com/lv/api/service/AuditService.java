@@ -4,7 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.query.AuditEntity;
+import org.hibernate.envers.query.AuditQuery;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @Slf4j
@@ -91,7 +94,6 @@ public class AuditService {
                     .add(AuditEntity.id().eq(entityId))
                     .add(AuditEntity.revisionNumber().lt(currentRevision))
                     .getSingleResult();
-
             if (prevRevision != null) {
                 return (T) auditReader.find(clazz, entityId, prevRevision);
             }
@@ -101,4 +103,23 @@ public class AuditService {
         return null;
     }
 
+    /**
+     * Description: Get list previous audit version of a specific version of an entity
+     *
+     * @param clazz: Class Type of entity tobe get current version
+     * @param entityId: Id of entity tobe get previous version
+     * @return: previous version Entity Object of @currentVersion
+     * @param <T>
+     */
+    public <T extends Object> List<T> getPreviousVersion(Class<T> clazz, Object entityId) {
+        try {
+            AuditQuery query = auditReader.createQuery()
+                    .forRevisionsOfEntity(clazz, false, true)
+                    .addOrder(AuditEntity.revisionNumber().asc());
+            return query.getResultList();
+        } catch (Exception ex) {
+            log.error("Get previous version for object {} failed, {}", entityId, ex.getMessage());
+        }
+        return null;
+    }
 }

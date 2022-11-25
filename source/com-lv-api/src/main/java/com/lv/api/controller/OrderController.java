@@ -13,6 +13,7 @@ import com.lv.api.form.order.ChangeOrderStatusForm;
 import com.lv.api.form.order.CreateOrderForm;
 import com.lv.api.form.order.CreateOrderItemForm.OrderProductConfig;
 import com.lv.api.mapper.OrderMapper;
+import com.lv.api.service.AuditService;
 import com.lv.api.storage.criteria.OrderCriteria;
 import com.lv.api.storage.model.*;
 import com.lv.api.storage.repository.*;
@@ -44,6 +45,8 @@ public class OrderController extends ABasicController {
     private final CustomerRepository customerRepository;
     private final OrderMapper orderMapper;
 
+    private final AuditService auditService;
+
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<ResponseListObj<OrderAdminDto>> list(OrderCriteria orderCriteria, Pageable pageable) {
         Page<Order> orderPage = orderRepository.findAll(orderCriteria.getSpecification(), pageable);
@@ -63,6 +66,12 @@ public class OrderController extends ABasicController {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new RequestException(ErrorCode.ORDER_NOT_FOUND, "Order not found"));
         return new ApiMessageDto<>(orderMapper.fromOrderEntityToAdminDtoDetails(order), "Get order details successfully");
+    }
+
+    @GetMapping(value = "/get-history/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApiMessageDto<List<OrderAdminDto>> getHistory(@PathVariable(value = "id") Long id) {
+        List<Order> orderHistory = auditService.getPreviousVersion(Order.class, id);
+        return new ApiMessageDto<>(orderMapper.fromOrderEntityListToAdminDtoListPage(orderHistory), "");
     }
 
     @Transactional

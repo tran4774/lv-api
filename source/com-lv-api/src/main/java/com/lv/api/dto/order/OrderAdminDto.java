@@ -44,7 +44,4 @@ public class OrderAdminDto extends ABasicAdminDto {
 
     @ApiModelProperty(name = "orderItems")
     private List<OrderItemDto> orderItems = new ArrayList<>();
-
-    @ApiModelProperty(name = "orderStatus")
-    private List<OrderStatusDto> orderStatuses = new ArrayList<>();
 }
