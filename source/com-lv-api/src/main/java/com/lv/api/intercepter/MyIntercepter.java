@@ -54,7 +54,7 @@ public class MyIntercepter implements HandlerInterceptor {
         return validSign;
     }
 
-    private Boolean checkHeader(HttpServletRequest request){
+    public Boolean checkHeader(HttpServletRequest request){
         String header = request.getHeader("Authorization");
         if (header == null || !header.startsWith("Bearer ")) {
             return false;

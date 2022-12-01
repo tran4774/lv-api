@@ -12,6 +12,7 @@ import com.lv.api.exception.RequestException;
 import com.lv.api.form.order.ChangeOrderStatusForm;
 import com.lv.api.form.order.CreateOrderForm;
 import com.lv.api.form.order.CreateOrderItemForm.OrderProductConfig;
+import com.lv.api.intercepter.MyIntercepter;
 import com.lv.api.mapper.OrderMapper;
 import com.lv.api.service.AuditService;
 import com.lv.api.storage.criteria.OrderCriteria;
@@ -25,6 +26,7 @@ import org.springframework.http.MediaType;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -44,8 +46,8 @@ public class OrderController extends ABasicController {
     private final ProductVariantRepository variantRepository;
     private final CustomerRepository customerRepository;
     private final OrderMapper orderMapper;
-
     private final AuditService auditService;
+    private final MyIntercepter myIntercepter;
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<ResponseListObj<OrderAdminDto>> list(OrderCriteria orderCriteria, Pageable pageable) {
@@ -76,15 +78,16 @@ public class OrderController extends ABasicController {
 
     @Transactional
     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiMessageDto<OrderStatusDto> create(@Valid @RequestBody CreateOrderForm createOrderForm, BindingResult bindingResult) {
+    public ApiMessageDto<OrderStatusDto> create(@Valid @RequestBody CreateOrderForm createOrderForm, BindingResult bindingResult, HttpServletRequest request) {
+        Boolean isLogin = myIntercepter.checkHeader(request);
+
         Order order = new Order();
-        try {
-            Customer customer = customerRepository.findByAccountId(getCurrentUserId())
-                    .orElseThrow(() -> new RequestException(ErrorCode.CUSTOMER_ERROR_NOT_FOUND, "Customer not found"));
-            order.setCustomer(customer);
-        } catch (NullPointerException e) {
-            order.setCustomer(null);
+        Customer customer = null;
+        if (isLogin) {
+            customer = customerRepository.findByAccountId(getCurrentUserId()).orElse(null);
         }
+
+        order.setCustomer(customer);
 
         Location ward = locationRepository.findById(createOrderForm.getWardId())
                 .orElseThrow(() -> new RequestException(ErrorCode.LOCATION_ERROR_NOTFOUND, "Ward not found"));
