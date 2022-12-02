@@ -184,6 +184,12 @@ public class Application {
         results.add(Permission.builder().action("/v1/tag/create").description("Create tag").name("Create tag").nameGroup("Tag").showMenu(false).build());
         results.add(Permission.builder().action("/v1/tag/update").description("Update tag").name("Update tag").nameGroup("Tag").showMenu(false).build());
         results.add(Permission.builder().action("/v1/tag/delete").description("Delete tag").name("Delete tag").nameGroup("Tag").showMenu(false).build());
+        //ORDER
+        results.add(Permission.builder().action("/v1/order/list").description("Get list order").name("Get list order").nameGroup("Order").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/order/get").description("Get order").name("Get order").nameGroup("Order").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/order/create").description("Create order").name("Create order").nameGroup("Order").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/order/get-history").description("Get order history").name("Get order history").nameGroup("Order").showMenu(false).build());
+        results.add(Permission.builder().action("/v1/order/change-status").description("Change order status").name("Change order status").nameGroup("Order").showMenu(false).build());
         return permissionRepository.saveAll(results);
     }
 
