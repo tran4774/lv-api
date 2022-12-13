@@ -5,6 +5,7 @@ import com.lv.api.dto.ApiMessageDto;
 import com.lv.api.dto.ErrorCode;
 import com.lv.api.dto.ResponseListObj;
 import com.lv.api.dto.order.OrderAdminDto;
+import com.lv.api.dto.order.OrderDto;
 import com.lv.api.dto.order.OrderStatusDto;
 import com.lv.api.dto.productconfig.ProductConfigDto;
 import com.lv.api.dto.productvariant.ProductVariantDto;
@@ -50,12 +51,26 @@ public class OrderController extends ABasicController {
     private final MyIntercepter myIntercepter;
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiMessageDto<ResponseListObj<OrderAdminDto>> list(OrderCriteria orderCriteria, Pageable pageable) {
+    public ApiMessageDto<ResponseListObj<OrderAdminDto>> list(@Valid OrderCriteria orderCriteria, BindingResult bindingResult, Pageable pageable) {
         Page<Order> orderPage = orderRepository.findAll(orderCriteria.getSpecification(), pageable);
         List<OrderAdminDto> orderAdminDtoList = orderMapper.fromOrderEntityListToAdminDtoListPage(orderPage.getContent());
         return new ApiMessageDto<>(
                 new ResponseListObj<>(
                         orderAdminDtoList,
+                        orderPage
+                ),
+                "Get list order successfully"
+        );
+    }
+
+    @GetMapping(value = "/list-user", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApiMessageDto<ResponseListObj<OrderDto>> listUser(OrderCriteria orderCriteria, BindingResult bindingResult, Pageable pageable) {
+        orderCriteria.setCustomerId(getCurrentUserId());
+        Page<Order> orderPage = orderRepository.findAll(orderCriteria.getSpecification(), pageable);
+        List<OrderDto> orderDtoList = orderMapper.fromOrderEntityListToOrderDtoListPage(orderPage.getContent());
+        return new ApiMessageDto<>(
+                new ResponseListObj<>(
+                        orderDtoList,
                         orderPage
                 ),
                 "Get list order successfully"
@@ -70,10 +85,18 @@ public class OrderController extends ABasicController {
         return new ApiMessageDto<>(orderMapper.fromOrderEntityToAdminDtoDetails(order), "Get order details successfully");
     }
 
+    @Transactional
+    @GetMapping(value = "/get-user/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApiMessageDto<OrderDto> getUser(@PathVariable(value = "id") Long id) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new RequestException(ErrorCode.ORDER_NOT_FOUND, "Order not found"));
+        return new ApiMessageDto<>(orderMapper.fromOrderEntityToOrderDtoDetails(order), "Get order details successfully");
+    }
+
     @GetMapping(value = "/get-history/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiMessageDto<List<OrderAdminDto>> getHistory(@PathVariable(value = "id") Long id) {
+    public ApiMessageDto<List<OrderStatusDto>> getHistory(@PathVariable(value = "id") Long id) {
         List<Order> orderHistory = auditService.getPreviousVersion(Order.class, id);
-        return new ApiMessageDto<>(orderMapper.fromOrderEntityListToAdminDtoListPage(orderHistory), "");
+        return new ApiMessageDto<>(orderMapper.fromOrderEntityAuditListToOrderStatusDtoList(orderHistory), "Get order audit successfully");
     }
 
     @Transactional

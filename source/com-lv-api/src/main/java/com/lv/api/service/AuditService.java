@@ -114,7 +114,8 @@ public class AuditService {
     public <T extends Object> List<T> getPreviousVersion(Class<T> clazz, Object entityId) {
         try {
             AuditQuery query = auditReader.createQuery()
-                    .forRevisionsOfEntity(clazz, false, true)
+                    .forRevisionsOfEntity(clazz, true, true)
+                    .add(AuditEntity.id().eq(entityId))
                     .addOrder(AuditEntity.revisionNumber().asc());
             return query.getResultList();
         } catch (Exception ex) {
