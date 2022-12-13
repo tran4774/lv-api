@@ -25,6 +25,7 @@ import java.util.List;
 @AllArgsConstructor
 @AuditOverrides({
         @AuditOverride(forClass = Auditable.class, name = "modifiedBy"),
+        @AuditOverride(forClass = Auditable.class, name = "modifiedDate"),
         @AuditOverride(forClass = Auditable.class, name = "status")
 })
 public class Order extends Auditable<String> {
