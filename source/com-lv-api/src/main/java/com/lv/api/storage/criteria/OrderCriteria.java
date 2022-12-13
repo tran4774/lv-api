@@ -16,7 +16,7 @@ import java.util.List;
 public class OrderCriteria {
 
     private Long id;
-    @OrderStatus
+    @OrderStatus(allowNull = true)
     private Integer orderStatus;
     private String receiverFullName;
     private String phone;

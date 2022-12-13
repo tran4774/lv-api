@@ -64,7 +64,7 @@ public class OrderController extends ABasicController {
     }
 
     @GetMapping(value = "/list-user", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiMessageDto<ResponseListObj<OrderDto>> listUser(OrderCriteria orderCriteria, BindingResult bindingResult, Pageable pageable) {
+    public ApiMessageDto<ResponseListObj<OrderDto>> listUser(@Valid OrderCriteria orderCriteria, BindingResult bindingResult, Pageable pageable) {
         orderCriteria.setCustomerId(getCurrentUserId());
         Page<Order> orderPage = orderRepository.findAll(orderCriteria.getSpecification(), pageable);
         List<OrderDto> orderDtoList = orderMapper.fromOrderEntityListToOrderDtoListPage(orderPage.getContent());
