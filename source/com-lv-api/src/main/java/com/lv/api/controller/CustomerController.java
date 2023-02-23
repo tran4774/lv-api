@@ -31,6 +31,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/v1/customer")
@@ -163,10 +164,17 @@ public class CustomerController extends ABasicController {
 
     @GetMapping(value = "/address/get/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<CustomerAddressDto> getAddress(@PathVariable("id") Long id) {
-        CustomerAddress customerAddress = customerAddressRepository.findById(id)
-                .orElseThrow(() -> new RequestException(ErrorCode.CUSTOMER_ADDRESS_ERROR_NOT_FOUND, "Customer's address not found"));
-        Customer customer = customerAddress.getCustomer();
-        return new ApiMessageDto<>(customerMapper.fromCustomerAddressEntityToDto(customerAddress), "Get list successfully");
+        Optional<CustomerAddress> customerAddress;
+        if (isCustomer()) {
+            customerAddress = customerAddressRepository.findCustomerAddressByIdAndCustomerId(id, getCurrentUserId());
+        } else {
+            customerAddress = customerAddressRepository.findById(id);
+        }
+        return new ApiMessageDto<>(
+                customerMapper.fromCustomerAddressEntityToDto(
+                        customerAddress.orElseThrow(() -> new RequestException(ErrorCode.CUSTOMER_ADDRESS_ERROR_NOT_FOUND, "Customer's address not found"))
+                ),
+                "Get list successfully");
     }
 
     @Transactional
@@ -188,9 +196,7 @@ public class CustomerController extends ABasicController {
         customerAddress.setWard(ward);
         customerAddress.setCustomer(customer);
         if (createAddressForm.getIsDefault()) {
-            List<CustomerAddress> customerAddresses = customerAddressRepository.findCustomerAddressByCustomerIdAndIsDefault(customer.getId(), true);
-            customerAddresses.stream().forEach(ca -> ca.setIsDefault(false));
-            customerAddressRepository.saveAll(customerAddresses);
+            customerAddressRepository.updateCustomerAddressWithDefault(customer.getId(), false);
         }
         customerAddressRepository.save(customerAddress);
         return new ApiMessageDto<>("Add address success");
@@ -212,9 +218,7 @@ public class CustomerController extends ABasicController {
         if (!Objects.equals(province.getId(), updateAddressForm.getProvinceId()))
             throw new RequestException(ErrorCode.LOCATION_ERROR_INVALID, "Invalid province");
         if (updateAddressForm.getIsDefault()) {
-            List<CustomerAddress> customerAddresses = customerAddressRepository.findCustomerAddressByCustomerIdAndIsDefault(customerAddress.getCustomer().getId(), true);
-            customerAddresses.stream().forEach(ca -> ca.setIsDefault(false));
-            customerAddressRepository.saveAll(customerAddresses);
+            customerAddressRepository.updateCustomerAddressWithDefault(getCurrentUserId(), false);
         }
         customerMapper.fromUpdateAddressFormToCustomerAddress(updateAddressForm, customerAddress);
         customerAddressRepository.save(customerAddress);
@@ -239,9 +243,7 @@ public class CustomerController extends ABasicController {
                 .orElseThrow(() -> new RequestException(ErrorCode.CUSTOMER_ADDRESS_ERROR_NOT_FOUND, "Customer's address not found"));
         if (!customerAddress.getCustomer().getId().equals(getCurrentUserId()))
             throw new RequestException(ErrorCode.CUSTOMER_ADDRESS_ERROR_NOT_FOUND, "Customer's address not found");
-        List<CustomerAddress> customerAddresses = customerAddressRepository.findCustomerAddressByCustomerIdAndIsDefault(customerAddress.getCustomer().getId(), true);
-        customerAddresses.stream().forEach(ca -> ca.setIsDefault(false));
-        customerAddressRepository.saveAll(customerAddresses);
+        customerAddressRepository.updateCustomerAddressWithDefault(getCurrentUserId(), false);
         customerAddress.setIsDefault(true);
         customerAddressRepository.save(customerAddress);
         return new ApiMessageDto<>("Set default customer's address successfully");
