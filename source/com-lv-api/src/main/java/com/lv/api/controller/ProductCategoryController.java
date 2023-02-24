@@ -5,6 +5,7 @@ import com.lv.api.dto.ApiMessageDto;
 import com.lv.api.dto.ErrorCode;
 import com.lv.api.dto.productcategory.ProductCategoryDto;
 import com.lv.api.exception.RequestException;
+import com.lv.api.form.productcategory.ChangeOrderProductCategoryFrom;
 import com.lv.api.form.productcategory.CreateProductCategoryForm;
 import com.lv.api.form.productcategory.UpdateProductCategoryForm;
 import com.lv.api.mapper.ProductCategoryMapper;
@@ -113,5 +114,19 @@ public class ProductCategoryController extends ABasicController {
             }
         });
         return new ApiMessageDto<>(categoryDtoMap.values(), "Get list successfully");
+    }
+
+    @PutMapping(value = "/change-order", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApiMessageDto<String> changeOrder(@Valid @RequestBody ChangeOrderProductCategoryFrom changeOrderProductCategoryFrom, BindingResult bindingResult) {
+        ProductCategory productCategory = productCategoryRepository.findById(changeOrderProductCategoryFrom.getId())
+                .orElseThrow(() -> new RequestException(ErrorCode.PRODUCT_CATEGORY_ERROR_NOT_FOUND, "Product category not found"));
+
+        ProductCategory productCategoryAtPosition = productCategoryRepository.findByOrderSort(changeOrderProductCategoryFrom.getNewOrder())
+                .orElseThrow(() -> new RequestException(ErrorCode.PRODUCT_CATEGORY_ERROR_NOT_FOUND, "Product category not found"));
+        productCategoryAtPosition.setOrderSort(productCategory.getOrderSort());
+        productCategory.setOrderSort(changeOrderProductCategoryFrom.getNewOrder());
+        productCategoryRepository.save(productCategory);
+        productCategoryRepository.save(productCategoryAtPosition);
+        return new ApiMessageDto<>("Change order successfully");
     }
 }

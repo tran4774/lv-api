@@ -13,4 +13,6 @@ public interface ProductCategoryRepository extends JpaRepository<ProductCategory
     List<ProductCategory> findAllByStatus(Integer status);
 
     Optional<ProductCategory> findByStatusAndId(Integer status, Long id);
+
+    Optional<ProductCategory> findByOrderSort(Integer orderSort);
 }
