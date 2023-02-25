@@ -126,9 +126,8 @@ public class OrderController extends ABasicController {
             Product product = productRepository.findById(createOrderItemFrom.getProductId())
                     .orElseThrow(() -> new RequestException(ErrorCode.PRODUCT_NOT_FOUND, "Product not found"));
             OrderItem orderItem = new OrderItem();
-            int counter = 0;
             double productPrice = 0.0;
-            List<Object> extraVariants = new ArrayList<>();
+            List<ProductConfigDto> extraVariants = new ArrayList<>();
             for (var productConfig : product.getProductConfigs()) {
                 ProductConfigDto productConfigDto = new ProductConfigDto();
                 OrderProductConfig orderProductConfig = createOrderItemFrom.getProductConfigs().stream()
@@ -166,7 +165,7 @@ public class OrderController extends ABasicController {
             orderItem.setDiscount(0.0);
             orderItem.setQuantity(createOrderItemFrom.getQuantity());
             orderItem.setExtraVariant(extraVariants);
-            orderItem.setOrderSort(++counter);
+            orderItem.setNote(createOrderForm.getNote());
             order.getOrderItems().add(orderItem);
         }
         order.setSubTotal(subTotal);

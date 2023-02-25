@@ -30,6 +30,9 @@ public class ProductCategoryDto {
     @ApiModelProperty(name = "status")
     private Integer status;
 
+    @ApiModelProperty("path")
+    private String path;
+
     @ApiModelProperty(name = "childCategories")
     private List<ProductCategoryDto> childCategories;
 }

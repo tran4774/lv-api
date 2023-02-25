@@ -21,7 +21,7 @@ public interface OrderItemMapper {
     @Mapping(source = "discount", target = "discount")
     @Mapping(source = "quantity", target = "quantity")
     @Mapping(source = "extraVariant", target = "extraVariant")
-    @Mapping(source = "orderSort", target = "orderSort")
+    @Mapping(source = "note", target = "note")
     OrderItemDto fromOrderItemEntityToDto(OrderItem orderItem);
 
     @Named("fromOrderItemListToDtoListMapper")

@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -18,10 +17,6 @@ public class CreateProductCategoryForm {
     @NotBlank(message = "name can not be blank")
     @ApiModelProperty(name = "name", required = true)
     private String name;
-
-    @NotNull(message = "Order sort can not be null")
-    @ApiModelProperty(name = "orderSort", required = true)
-    private Integer orderSort;
 
     @ApiModelProperty(name = "icon")
     private String icon;

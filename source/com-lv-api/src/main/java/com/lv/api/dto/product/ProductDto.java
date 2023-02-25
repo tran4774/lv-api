@@ -17,6 +17,9 @@ public class ProductDto {
     @ApiModelProperty(name = "productCategoryId")
     private Long productCategoryId;
 
+    @ApiModelProperty("productCategoryName")
+    private String productCategoryName;
+
     @ApiModelProperty(name = "tags")
     private String tags;
 

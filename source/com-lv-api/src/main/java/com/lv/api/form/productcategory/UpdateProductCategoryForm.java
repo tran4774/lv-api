@@ -23,10 +23,6 @@ public class UpdateProductCategoryForm {
     @ApiModelProperty(name = "name", required = true)
     private String name;
 
-    @NotNull(message = "Order sort can not be null")
-    @ApiModelProperty(name = "order", required = true)
-    private Integer orderSort;
-
     @ApiModelProperty(name = "icon")
     private String icon;
 

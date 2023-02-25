@@ -1,5 +1,6 @@
 package com.lv.api.storage.model;
 
+import com.lv.api.dto.productconfig.ProductConfigDto;
 import com.lv.api.utils.converters.ProductConfigJsonConverter;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -39,10 +40,10 @@ public class OrderItem {
     @Column(name = "quantity")
     private Integer quantity;
 
-    @Column(name = "extra_variant")
+    @Column(name = "extra_variant", columnDefinition = "TEXT")
     @Convert(converter = ProductConfigJsonConverter.class)
-    private List<Object> extraVariant;
+    private List<ProductConfigDto> extraVariant;
 
-    @Column(name = "order_sort")
-    private Integer orderSort;
+    @Column(name = "note")
+    private String note;
 }
