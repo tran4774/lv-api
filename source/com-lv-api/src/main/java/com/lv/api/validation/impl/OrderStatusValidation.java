@@ -2,7 +2,6 @@ package com.lv.api.validation.impl;
 
 import com.lv.api.constant.Constants;
 import com.lv.api.validation.OrderStatus;
-import com.lv.api.validation.PaymentMethod;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

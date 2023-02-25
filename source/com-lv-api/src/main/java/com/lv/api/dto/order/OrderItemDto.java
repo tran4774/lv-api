@@ -1,5 +1,6 @@
 package com.lv.api.dto.order;
 
+import com.lv.api.dto.productconfig.ProductConfigDto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,8 +27,8 @@ public class OrderItemDto {
     private Integer quantity;
 
     @ApiModelProperty(name = "extraVariant")
-    private List<Object> extraVariant;
+    private List<ProductConfigDto> extraVariant;
 
-    @ApiModelProperty(name = "orderSort")
-    private Integer orderSort;
+    @ApiModelProperty(name = "note")
+    private String note;
 }

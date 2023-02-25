@@ -2,7 +2,6 @@ package com.lv.api.dto.order;
 
 import com.lv.api.dto.ABasicAdminDto;
 import com.lv.api.dto.customer.CustomerAdminDto;
-import com.lv.api.dto.customer.CustomerDto;
 import com.lv.api.dto.location.LocationDto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;

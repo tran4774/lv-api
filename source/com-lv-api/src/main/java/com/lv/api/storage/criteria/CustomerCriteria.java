@@ -2,7 +2,6 @@ package com.lv.api.storage.criteria;
 
 import com.lv.api.storage.model.Account;
 import com.lv.api.storage.model.Customer;
-import com.lv.api.storage.model.Group;
 import com.lv.api.validation.Gender;
 import lombok.Getter;
 import lombok.Setter;

@@ -66,6 +66,8 @@ public class ProductCategoryController extends ABasicController {
                     .orElseThrow(() -> new RequestException(ErrorCode.PRODUCT_CATEGORY_ERROR_NOT_FOUND, "Parent not found"));
             productCategory.setParentCategory(parent);
         }
+        Integer orderSort = productCategoryRepository.countByParentCategoryId(createProductCategoryForm.getParentId()) + 1;
+        productCategory.setOrderSort(orderSort);
         productCategoryRepository.save(productCategory);
         return new ApiMessageDto<>("Create product category successfully");
     }
@@ -87,16 +89,22 @@ public class ProductCategoryController extends ABasicController {
         return new ApiMessageDto<>("Update product category successfully");
     }
 
+    @Transactional
     @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> delete(@PathVariable(name = "id") Long id) {
         ProductCategory productCategory = productCategoryRepository.findById(id)
-                .orElseThrow(() -> new RequestException(ErrorCode.PRODUCT_CATEGORY_ERROR_NOT_FOUND, "Parent not found"));
+                .orElseThrow(() -> new RequestException(ErrorCode.PRODUCT_CATEGORY_ERROR_NOT_FOUND, "Product category not found"));
         commonApiService.deleteFile(productCategory.getIcon());
+        Long parentProductCategoryId = null;
+        if (productCategory.getParentCategory() != null) {
+            parentProductCategoryId = productCategory.getParentCategory().getId();
+        }
+        productCategoryRepository.updateOrderSort(parentProductCategoryId, productCategory.getOrderSort(), Integer.MAX_VALUE, -1);
         productCategoryRepository.delete(productCategory);
         return new ApiMessageDto<>("Delete product category successfully");
     }
 
-    @Transactional
+    //    @Transactional
     @GetMapping(value = "/get-all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<Collection<ProductCategoryDto>> getAll() {
         List<ProductCategory> categoryList = productCategoryRepository.findAllByStatus(Constants.STATUS_ACTIVE);
@@ -104,7 +112,7 @@ public class ProductCategoryController extends ABasicController {
         categoryList.forEach(category -> categoryDtoMap.put(category.getId(), productCategoryMapper.fromProductCategoryEntityToDtoFE(category)));
         categoryList.forEach(category -> {
             ProductCategory parent = category.getParentCategory();
-            if (parent != null && categoryDtoMap.containsKey(parent.getId())) {
+            if (parent != null && !Objects.equals(parent.getStatus(), Constants.STATUS_ACTIVE) && categoryDtoMap.containsKey(parent.getId())) {
                 ProductCategoryDto productCategoryParentDto = categoryDtoMap.get(parent.getId());
                 if (productCategoryParentDto.getChildCategories() == null) {
                     productCategoryParentDto.setChildCategories(new ArrayList<>());
@@ -116,17 +124,31 @@ public class ProductCategoryController extends ABasicController {
         return new ApiMessageDto<>(categoryDtoMap.values(), "Get list successfully");
     }
 
+    @Transactional
     @PutMapping(value = "/change-order", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> changeOrder(@Valid @RequestBody ChangeOrderProductCategoryFrom changeOrderProductCategoryFrom, BindingResult bindingResult) {
         ProductCategory productCategory = productCategoryRepository.findById(changeOrderProductCategoryFrom.getId())
                 .orElseThrow(() -> new RequestException(ErrorCode.PRODUCT_CATEGORY_ERROR_NOT_FOUND, "Product category not found"));
-
-        ProductCategory productCategoryAtPosition = productCategoryRepository.findByOrderSort(changeOrderProductCategoryFrom.getNewOrder())
-                .orElseThrow(() -> new RequestException(ErrorCode.PRODUCT_CATEGORY_ERROR_NOT_FOUND, "Product category not found"));
-        productCategoryAtPosition.setOrderSort(productCategory.getOrderSort());
-        productCategory.setOrderSort(changeOrderProductCategoryFrom.getNewOrder());
+        ProductCategory parentProductCategory = productCategory.getParentCategory();
+        int newOrder = changeOrderProductCategoryFrom.getNewOrder() + 1;
+        Long parentProductCategoryId = null;
+        if (productCategory.getOrderSort() == newOrder) {
+            return new ApiMessageDto<>("Order sort don't need to change");
+        }
+        int coefficient = 1;
+        int start = newOrder;
+        int end = productCategory.getOrderSort();
+        if (productCategory.getOrderSort() < newOrder) {
+            coefficient = -1;
+            start = productCategory.getOrderSort();
+            end = newOrder;
+        }
+        if (parentProductCategory != null) {
+            parentProductCategoryId = parentProductCategory.getId();
+        }
+        productCategoryRepository.updateOrderSort(parentProductCategoryId, start, end, coefficient);
+        productCategory.setOrderSort(newOrder);
         productCategoryRepository.save(productCategory);
-        productCategoryRepository.save(productCategoryAtPosition);
         return new ApiMessageDto<>("Change order successfully");
     }
 }

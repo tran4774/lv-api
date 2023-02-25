@@ -1,6 +1,5 @@
 package com.lv.api.form.location;
 
-import com.lv.api.validation.LocationKind;
 import com.lv.api.validation.Status;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;

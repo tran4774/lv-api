@@ -20,6 +20,9 @@ public class CreateOrderItemForm {
     @ApiModelProperty(name = "quantity")
     private Integer quantity;
 
+    @ApiModelProperty(name = "note")
+    private String note;
+
     @ApiModelProperty(name = "productConfigs")
     private List<OrderProductConfig> productConfigs = new ArrayList<>();
 
