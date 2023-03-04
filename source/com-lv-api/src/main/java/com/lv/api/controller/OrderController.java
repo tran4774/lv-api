@@ -16,11 +16,13 @@ import com.lv.api.form.order.CreateOrderItemForm.OrderProductConfig;
 import com.lv.api.intercepter.MyIntercepter;
 import com.lv.api.mapper.OrderMapper;
 import com.lv.api.service.AuditService;
+import com.lv.api.service.OrderService;
 import com.lv.api.storage.criteria.OrderCriteria;
 import com.lv.api.storage.model.*;
 import com.lv.api.storage.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -49,6 +51,7 @@ public class OrderController extends ABasicController {
     private final OrderMapper orderMapper;
     private final AuditService auditService;
     private final MyIntercepter myIntercepter;
+    private final OrderService orderService;
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<ResponseListObj<OrderAdminDto>> list(@Valid OrderCriteria orderCriteria, BindingResult bindingResult, Pageable pageable) {
@@ -82,6 +85,8 @@ public class OrderController extends ABasicController {
     public ApiMessageDto<OrderAdminDto> get(@PathVariable(value = "id") Long id) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new RequestException(ErrorCode.ORDER_NOT_FOUND, "Order not found"));
+        OrderAdminDto orderAdminDto = orderMapper.fromOrderEntityToAdminDtoDetails(order);
+        orderAdminDto.setAvailableStates(orderService.getAvailableStatesEmployee(orderAdminDto.getStatus()));
         return new ApiMessageDto<>(orderMapper.fromOrderEntityToAdminDtoDetails(order), "Get order details successfully");
     }
 
@@ -151,6 +156,7 @@ public class OrderController extends ABasicController {
                     productVariantDto.setName(variant.getName());
                     productVariantDto.setId(variant.getId());
                     productVariantDto.setPrice(variant.getPrice());
+                    productVariantDto.setImage(StringUtils.isEmpty(variant.getImage()) ? "" : variant.getImage());
                     productConfigDto.getVariants().add(productVariantDto);
                 }
                 productConfigDto.setName(productConfig.getName());
@@ -165,7 +171,7 @@ public class OrderController extends ABasicController {
             orderItem.setDiscount(0.0);
             orderItem.setQuantity(createOrderItemFrom.getQuantity());
             orderItem.setExtraVariant(extraVariants);
-            orderItem.setNote(createOrderForm.getNote());
+            orderItem.setNote(createOrderItemFrom.getNote());
             order.getOrderItems().add(orderItem);
         }
         order.setSubTotal(subTotal);
@@ -189,6 +195,9 @@ public class OrderController extends ABasicController {
     public ApiMessageDto<String> changeOrderStatus(@Valid @RequestBody ChangeOrderStatusForm changeOrderStatusForm, BindingResult bindingResult) {
         Order order = orderRepository.findById(changeOrderStatusForm.getOrderId())
                 .orElseThrow(() -> new RequestException(ErrorCode.ORDER_NOT_FOUND, "Order not found"));
+        if (!orderService.checkValidNextStateEmployee(order.getStatus(), changeOrderStatusForm.getOrderStatus())) {
+            throw new RequestException(ErrorCode.ORDER_STATUS_INVALID, "Invalid order status");
+        }
         order.setStatus(changeOrderStatusForm.getOrderStatus());
         orderRepository.save(order);
         return new ApiMessageDto<>("Change order status successfully");

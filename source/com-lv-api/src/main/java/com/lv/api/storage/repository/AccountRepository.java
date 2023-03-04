@@ -35,4 +35,7 @@ public interface AccountRepository extends JpaRepository<Account, Long>, JpaSpec
 
     List<Account> findAllByKind(Integer kind);
 
+    Long countByPhoneAndIdNot(String phone, Long id);
+
+    Long countByEmailAndIdNot(String email, Long id);
 }
