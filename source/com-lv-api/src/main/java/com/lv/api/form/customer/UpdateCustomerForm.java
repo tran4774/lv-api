@@ -19,8 +19,7 @@ public class UpdateCustomerForm {
     @ApiModelProperty(value = "id", required = true)
     private Long id;
 
-    @NotEmpty(message = "Password cant not be null")
-    @ApiModelProperty(name = "Password", required = true)
+    @ApiModelProperty(name = "password")
     private String password;
 
     @Email(message = "Email is invalid")

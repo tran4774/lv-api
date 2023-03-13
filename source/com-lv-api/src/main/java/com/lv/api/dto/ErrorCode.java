@@ -132,6 +132,8 @@ public class ErrorCode {
     public static final String ORDER_NOT_FOUND = "ORDER-ERROR-000";
     public static final String ORDER_PRODUCT_CONFIG_IS_REQUIRED = "ORDER-ERROR-001";
     public static final String ORDER_PRODUCT_VARIANT_INVALID = "ORDER-ERROR-002";
+    public static final String ORDER_STATUS_INVALID = "ORDER-ERROR-003";
+    public static final String ORDER_STATUS_NOT_FOUND = "ORDER-ERROR-004";
 
     private ErrorCode() { throw new IllegalStateException("Utility class"); }
 }

@@ -11,6 +11,7 @@ import com.lv.api.form.employee.CreateEmployeeForm;
 import com.lv.api.form.employee.UpdateEmployeeForm;
 import com.lv.api.form.employee.UpdateProfileEmployeeForm;
 import com.lv.api.mapper.EmployeeMapper;
+import com.lv.api.service.AccountService;
 import com.lv.api.service.CommonApiService;
 import com.lv.api.storage.criteria.EmployeeCriteria;
 import com.lv.api.storage.model.Account;
@@ -49,6 +50,7 @@ public class EmployeeController extends ABasicController {
     private final CategoryRepository categoryRepository;
     private final EmployeeMapper employeeMapper;
     private final CommonApiService commonApiService;
+    private final AccountService accountService;
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<ResponseListObj<EmployeeAdminDto>> list(EmployeeCriteria employeeCriteria, Pageable pageable) {
@@ -82,10 +84,7 @@ public class EmployeeController extends ABasicController {
 
     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> create(@Valid @RequestBody CreateEmployeeForm createEmployeeForm, BindingResult bindingResult) {
-        if (accountRepository.countAccountByUsernameOrEmailOrPhone(
-                createEmployeeForm.getUsername(), createEmployeeForm.getEmail(), createEmployeeForm.getPhone()
-        ) > 0)
-            throw new RequestException(ErrorCode.ACCOUNT_ERROR_EXISTED, "Account is existed");
+        accountService.checkAccountCreate(createEmployeeForm.getUsername(), createEmployeeForm.getPhone(), createEmployeeForm.getEmail());
         Group groupEmployee = groupRepository.findById(createEmployeeForm.getGroupId())
                 .orElseThrow(() -> new RequestException(ErrorCode.GENERAL_ERROR_NOT_FOUND, "Group does not exist!"));
         Category department = categoryRepository.findById(createEmployeeForm.getDepartmentId())
@@ -103,12 +102,9 @@ public class EmployeeController extends ABasicController {
 
     @PutMapping(value = "/update", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> update(@Valid @RequestBody UpdateEmployeeForm updateEmployeeForm, BindingResult bindingResult) {
-        if (accountRepository.countAccountByPhoneOrEmail(
-                updateEmployeeForm.getPhone(), updateEmployeeForm.getEmail()
-        ) > 1)
-            throw new RequestException(ErrorCode.ACCOUNT_ERROR_EXISTED, "Account is existed");
         Employee employee = employeeRepository.findById(updateEmployeeForm.getId())
                 .orElseThrow(() -> new RequestException(ErrorCode.EMPLOYEE_ERROR_NOT_FOUND, "Employee not found"));
+        accountService.checkAccountUpdate(employee.getAccount().getId(), updateEmployeeForm.getPhone(), updateEmployeeForm.getEmail());
         if (!Objects.equals(updateEmployeeForm.getDepartmentId(), employee.getDepartment().getId())) {
             Category department = categoryRepository.findById(updateEmployeeForm.getDepartmentId())
                     .orElseThrow(() -> new RequestException(ErrorCode.CATEGORY_ERROR_NOT_FOUND, "Department not found"));

@@ -10,6 +10,7 @@ import com.lv.api.dto.customer.CustomerDto;
 import com.lv.api.exception.RequestException;
 import com.lv.api.form.customer.*;
 import com.lv.api.mapper.CustomerMapper;
+import com.lv.api.service.AccountService;
 import com.lv.api.service.CommonApiService;
 import com.lv.api.storage.criteria.CustomerAddressCriteria;
 import com.lv.api.storage.criteria.CustomerCriteria;
@@ -46,6 +47,7 @@ public class CustomerController extends ABasicController {
     private final LocationRepository locationRepository;
     private final CustomerMapper customerMapper;
     private final CommonApiService commonApiService;
+    private final AccountService accountService;
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<ResponseListObj<CustomerAdminDto>> list(CustomerCriteria customerCriteria, BindingResult bindingResult, Pageable pageable) {
@@ -79,11 +81,8 @@ public class CustomerController extends ABasicController {
 
     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> create(@Valid @RequestBody CreateCustomerForm createCustomerForm, BindingResult bindingResult) {
-        if (accountRepository.countAccountByUsernameOrEmailOrPhone(
-                createCustomerForm.getUsername(), createCustomerForm.getEmail(), createCustomerForm.getPhone()
-        ) > 0)
-            throw new RequestException(ErrorCode.ACCOUNT_ERROR_EXISTED, "Account is existed");
-
+        // 0 = not exist
+        accountService.checkAccountCreate(createCustomerForm.getUsername(), createCustomerForm.getPhone(), createCustomerForm.getEmail());
         Group groupCustomer = groupRepository.findFirstByKind(Constants.GROUP_KIND_CUSTOMER);
         if (groupCustomer == null) {
             throw new RequestException(ErrorCode.GROUP_ERROR_NOT_FOUND);
@@ -98,11 +97,7 @@ public class CustomerController extends ABasicController {
 
     @PostMapping(value = "register", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> register(@Valid @RequestBody RegisterCustomerForm registerCustomerForm, BindingResult bindingResult) {
-        if (accountRepository.countAccountByUsernameOrEmailOrPhone(
-                registerCustomerForm.getUsername(), registerCustomerForm.getEmail(), registerCustomerForm.getPhone()
-        ) > 0)
-            throw new RequestException(ErrorCode.ACCOUNT_ERROR_EXISTED, "Account is existed");
-
+        accountService.checkAccountCreate(registerCustomerForm.getUsername(), registerCustomerForm.getPhone(), registerCustomerForm.getEmail());
         Group groupCustomer = groupRepository.findFirstByKind(Constants.GROUP_KIND_CUSTOMER);
         if (groupCustomer == null) {
             throw new RequestException(ErrorCode.GROUP_ERROR_NOT_FOUND);
@@ -117,12 +112,9 @@ public class CustomerController extends ABasicController {
 
     @PutMapping(value = "/update", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> update(@Valid @RequestBody UpdateCustomerForm updateCustomerForm, BindingResult bindingResult) {
-        if (accountRepository.countAccountByPhoneOrEmail(
-                updateCustomerForm.getPhone(), updateCustomerForm.getEmail()
-        ) > 1)
-            throw new RequestException(ErrorCode.ACCOUNT_ERROR_EXISTED, "Account is existed");
         Customer customer = customerRepository.findById(updateCustomerForm.getId())
                 .orElseThrow(() -> new RequestException(ErrorCode.CUSTOMER_ERROR_NOT_FOUND, "Customer not found"));
+        accountService.checkAccountUpdate(customer.getAccount().getId(), updateCustomerForm.getPhone(), updateCustomerForm.getEmail());
         if (StringUtils.isNoneBlank(updateCustomerForm.getAvatar()) && !updateCustomerForm.getAvatar().equals(customer.getAccount().getAvatarPath()))
             commonApiService.deleteFile(customer.getAccount().getAvatarPath());
         customerMapper.fromUpdateCustomerFormToEntity(updateCustomerForm, customer);

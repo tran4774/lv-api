@@ -16,8 +16,7 @@ public class UpdateEmployeeForm {
     @ApiModelProperty(value = "id", required = true)
     private Long id;
 
-    @NotBlank(message = "Password cant not be blank")
-    @ApiModelProperty(name = "Password", required = true)
+    @ApiModelProperty(name = "password")
     private String password;
 
     @Email(message = "Email is invalid")

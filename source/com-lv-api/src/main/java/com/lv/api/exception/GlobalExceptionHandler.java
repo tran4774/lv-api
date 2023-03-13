@@ -81,7 +81,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({RequestException.class})
     public ResponseEntity<ApiMessageDto<String>> handleRequestException(RequestException ex) {
-        ex.printStackTrace();
+        log.error("Request exception: {}, error code: {}", ex.getMessage(), ex.getErrorCode());
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         apiMessageDto.setResult(false);
         apiMessageDto.setMessage(ex.getMessage());

@@ -59,6 +59,7 @@ public interface ProductMapper {
     @Mapping(source = "image", target = "image")
     @Mapping(source = "isSoldOut", target = "isSoldOut")
     @Mapping(source = "kind", target = "kind")
+    @Mapping(source = "productConfigs", target = "productConfigs", qualifiedByName = "fromProductConfigEntityListToDtoListMapper")
     ProductDto fromProductEntityToDtoTree(Product product);
 
     @Named("fromProductEntityListToDtoListTreeMapper")
