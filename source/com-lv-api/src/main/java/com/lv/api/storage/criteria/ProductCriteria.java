@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @Setter
 public class ProductCriteria {
     private Long id;
-    private Long categoryId;
+    private List<Long> categoryIds;
     private List<String> tags;
     private String description;
     private String name;
@@ -38,8 +38,8 @@ public class ProductCriteria {
                 predicates.add(cb.equal(root.get("id"), getId()));
             }
 
-            if (getCategoryId() != null) {
-                predicates.add(cb.equal(root.get("categoryId"), getCategoryId()));
+            if (getCategoryIds() != null) {
+                predicates.add(root.get("category").get("id").in(getCategoryIds()));
             }
 
             if (getTags() != null) {
@@ -86,7 +86,7 @@ public class ProductCriteria {
                 this.variantNames = getVariantNames().stream().map(v -> v.toLowerCase().trim()).collect(Collectors.toList());
                 predicates.add(cb.lower(productConfigJoin.join("variants").get("name")).in(getVariantNames()));
             }
-            return cb.and(predicates.toArray(new Predicate[predicates.size()]));
+            return cb.and(predicates.toArray(Predicate[]::new));
         };
     }
 }

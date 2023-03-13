@@ -145,12 +145,11 @@ public class ProductController extends ABasicController {
     }
 
     @Transactional
-    @GetMapping(value = "/get-by-category", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiMessageDto<Collection<ProductDto>> getAll(Long categoryId) {
-        ProductCategory category = productCategoryRepository.findByStatusAndId(Constants.STATUS_ACTIVE, categoryId)
-                .orElseThrow(() -> new RequestException(ErrorCode.PRODUCT_CATEGORY_ERROR_NOT_FOUND, "Category not found"));
-        List<Product> productList = category.getProducts();
-        Map<Long, ProductDto> productDtoMap = new ConcurrentHashMap();
+    @GetMapping(value = "/get-all", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApiMessageDto<Collection<ProductDto>> getAll(@Valid ProductCriteria productCriteria, BindingResult bindingResult) {
+        Page<Product> productPage = productRepository.findAll(productCriteria.getSpecification(), Pageable.unpaged());
+        List<Product> productList = productPage.getContent();
+        Map<Long, ProductDto> productDtoMap = new ConcurrentHashMap<>();
         productList.forEach(product -> productDtoMap.put(product.getId(), productMapper.fromProductEntityToDtoTree(product)));
         productList.forEach(product -> {
             Product parent = product.getParentProduct();
