@@ -26,7 +26,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
@@ -45,11 +48,11 @@ public class ProductController extends ABasicController {
         Page<Product> productPage = productRepository.findAll(productCriteria.getSpecification(), pageable);
         List<ProductAdminDto> productAdminDtoList = productMapper.fromProductEntityListToAdminDtoList(productPage.getContent());
         return new ApiMessageDto<>(
-                new ResponseListObj<>(
-                        productAdminDtoList,
-                        productPage
-                ),
-                "Get list product successfully"
+            new ResponseListObj<>(
+                productAdminDtoList,
+                productPage
+            ),
+            "Get list product successfully"
         );
     }
 
@@ -63,7 +66,7 @@ public class ProductController extends ABasicController {
     @GetMapping(value = "/get/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<ProductAdminDto> get(@PathVariable(name = "id") Long id) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RequestException(ErrorCode.PRODUCT_NOT_FOUND, "Product not found"));
+            .orElseThrow(() -> new RequestException(ErrorCode.PRODUCT_NOT_FOUND, "Product not found"));
         ProductAdminDto productAdminDto = productMapper.fromProductEntityToAdminDto(product);
         return new ApiMessageDto<>(productAdminDto, "Get product successfully");
     }
@@ -74,12 +77,12 @@ public class ProductController extends ABasicController {
         Product product = productMapper.fromCreateProductFormToEntity(createProductForm);
         if (createProductForm.getCategoryId() != null) {
             ProductCategory category = productCategoryRepository.findById(createProductForm.getCategoryId())
-                    .orElseThrow(() -> new RequestException(ErrorCode.PRODUCT_CATEGORY_ERROR_NOT_FOUND, "Product category not found"));
+                .orElseThrow(() -> new RequestException(ErrorCode.PRODUCT_CATEGORY_ERROR_NOT_FOUND, "Product category not found"));
             product.setCategory(category);
         }
         if (createProductForm.getParentProductId() != null) {
             Product parentProduct = productRepository.findById(createProductForm.getParentProductId())
-                    .orElseThrow(() -> new RequestException(ErrorCode.PRODUCT_NOT_FOUND, "Parent product not found"));
+                .orElseThrow(() -> new RequestException(ErrorCode.PRODUCT_NOT_FOUND, "Parent product not found"));
             if (!parentProduct.getKind().equals(Constants.PRODUCT_KIND_GROUP)) {
                 parentProduct.setKind(Constants.PRODUCT_KIND_GROUP);
                 parentProduct = productRepository.saveAndFlush(parentProduct);
@@ -94,7 +97,7 @@ public class ProductController extends ABasicController {
     @PutMapping(value = "/update", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> update(@Valid @RequestBody UpdateProductForm updateProductForm, BindingResult bindingResult) {
         Product product = productRepository.findById(updateProductForm.getId())
-                .orElseThrow(() -> new RequestException(ErrorCode.PRODUCT_NOT_FOUND, "Product not found"));
+            .orElseThrow(() -> new RequestException(ErrorCode.PRODUCT_NOT_FOUND, "Product not found"));
         Map<Long, String> imageMap = new HashMap<>();
         for (var productConfig : product.getProductConfigs()) {
             for (var productVariant : productConfig.getVariants()) {
@@ -113,7 +116,7 @@ public class ProductController extends ABasicController {
         }
         if (updateProductForm.getCategoryId() != null) {
             ProductCategory category = productCategoryRepository.findById(updateProductForm.getCategoryId())
-                    .orElseThrow(() -> new RequestException(ErrorCode.PRODUCT_CATEGORY_ERROR_NOT_FOUND, "Product category not found"));
+                .orElseThrow(() -> new RequestException(ErrorCode.PRODUCT_CATEGORY_ERROR_NOT_FOUND, "Product category not found"));
             product.setCategory(category);
         } else {
             product.setCategory(null);
@@ -121,7 +124,7 @@ public class ProductController extends ABasicController {
 
         if (updateProductForm.getParentProductId() != null) {
             Product parentProduct = productRepository.findById(updateProductForm.getParentProductId())
-                    .orElseThrow(() -> new RequestException(ErrorCode.PRODUCT_NOT_FOUND, "Parent product not found"));
+                .orElseThrow(() -> new RequestException(ErrorCode.PRODUCT_NOT_FOUND, "Parent product not found"));
             if (!parentProduct.getKind().equals(Constants.PRODUCT_KIND_GROUP)) {
                 parentProduct.setKind(Constants.PRODUCT_KIND_GROUP);
                 parentProduct = productRepository.saveAndFlush(parentProduct);
@@ -138,7 +141,7 @@ public class ProductController extends ABasicController {
     @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> delete(@PathVariable(name = "id") Long id) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RequestException(ErrorCode.PRODUCT_NOT_FOUND, "Product not found"));
+            .orElseThrow(() -> new RequestException(ErrorCode.PRODUCT_NOT_FOUND, "Product not found"));
 
         productRepository.delete(product);
         return new ApiMessageDto<>("Delete product successfully");
@@ -146,8 +149,8 @@ public class ProductController extends ABasicController {
 
     @Transactional
     @GetMapping(value = "/get-all", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiMessageDto<Collection<ProductDto>> getAll(@Valid ProductCriteria productCriteria, BindingResult bindingResult) {
-        Page<Product> productPage = productRepository.findAll(productCriteria.getSpecification(), Pageable.unpaged());
+    public ApiMessageDto<ResponseListObj<ProductDto>> getAll(@Valid ProductCriteria productCriteria, BindingResult bindingResult, Pageable pageable) {
+        Page<Product> productPage = productRepository.findAll(productCriteria.getSpecification(), pageable);
         List<Product> productList = productPage.getContent();
         Map<Long, ProductDto> productDtoMap = new ConcurrentHashMap<>();
         productList.forEach(product -> productDtoMap.put(product.getId(), productMapper.fromProductEntityToDtoTree(product)));
@@ -161,13 +164,16 @@ public class ProductController extends ABasicController {
                 productDtoMap.remove(product.getId());
             }
         });
-        return new ApiMessageDto<>(productDtoMap.values(), "Get all successfully");
+        return new ApiMessageDto<>(
+            new ResponseListObj<>(new ArrayList<>(productDtoMap.values()), productPage),
+            "Get all successfully"
+        );
     }
 
     @GetMapping(value = "/get-details/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<ProductDto> getDetails(@PathVariable(name = "id") Long id) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RequestException(ErrorCode.PRODUCT_NOT_FOUND, "Product not found"));
+            .orElseThrow(() -> new RequestException(ErrorCode.PRODUCT_NOT_FOUND, "Product not found"));
         if (!product.getStatus().equals(Constants.STATUS_ACTIVE)) {
             new RequestException(ErrorCode.PRODUCT_NOT_FOUND, "Product not found");
         }
